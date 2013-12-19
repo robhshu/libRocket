@@ -9,6 +9,10 @@ libRocket uses the time-tested open standards XHTML1.0 and CSS2.0 (while borrowi
 HTML5 and CSS3), and extends them with features suited towards real-time applications. Because of 
 this, you don't have to learn a whole new proprietary technology like other libraries in this space.
 
+## Planned Developments
+
+This branch of libRocket aims to look at swapping out the XML parser and experiment with animation!
+
 ## Features
 
 - Cross platform architecture: Windows, Mac, Linux, iPhone, etc.
