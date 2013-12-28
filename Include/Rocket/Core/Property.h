@@ -68,7 +68,15 @@ public:
 		MM = 1 << 10,				// number suffixed by 'mm'; fetch as < float >
 		PT = 1 << 11,				// number suffixed by 'pt'; fetch as < float >
 		PC = 1 << 12,				// number suffixed by 'pc'; fetch as < float >
-		PPI_UNIT = INCH | CM | MM | PT | PC
+		PPI_UNIT = INCH | CM | MM | PT | PC,
+
+		LINEAR_GRADIENT = 1 << 13,	// description, argh; fetch as < Colourb > for now
+
+		DEG = 1 << 14,				// number suffixed by 'deg'; fetch as < float >
+		GRAD = 1 << 15,				// number suffixed by 'grad'; fetch as < float >
+		RAD = 1 << 16,				// number suffixed by 'rad'; fetch as < float >
+		TURN = 1 << 17,				// number suffixed by 'turn'; fetch as < float >
+		ANGLE_UNIT = DEG | GRAD | RAD | TURN,
 	};
 
 	Property();

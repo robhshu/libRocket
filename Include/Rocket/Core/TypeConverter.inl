@@ -107,11 +107,15 @@ PASS_THROUGH(Vector2f);
 PASS_THROUGH(Colourf);
 PASS_THROUGH(Colourb);
 PASS_THROUGH(String);
+PASS_THROUGH(LinearGradient);
 
 // Pointer types need to be typedef'd
 class ScriptInterface;
 typedef ScriptInterface* ScriptInterfacePtr;
 PASS_THROUGH(ScriptInterfacePtr);
+//class LinearGradient;
+//typedef LinearGradient* LinearGradientPtr;
+//PASS_THROUGH(LinearGradientPtr);
 typedef void* voidPtr;
 PASS_THROUGH(voidPtr);
 
@@ -335,6 +339,18 @@ public:
 	static bool Convert(const URL& src, String& dest)
 	{
 		dest = src.GetURL();
+		return true;
+	}
+};
+
+template<>
+class TypeConverter< LinearGradient, String >
+{
+public:
+	static bool Convert(const LinearGradient& ROCKET_UNUSED(src), String& dest)
+	{
+		// temp for debug console
+		dest = "linear-gradient";
 		return true;
 	}
 };

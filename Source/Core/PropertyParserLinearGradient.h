@@ -25,38 +25,42 @@
  *
  */
 
-#ifndef ROCKETCORETYPECONVERTER_H
-#define ROCKETCORETYPECONVERTER_H
+#ifndef ROCKETCOREPROPERTYPARSERLINEARGRADIENT_H
+#define ROCKETCOREPROPERTYPARSERLINEARGRADIENT_H
 
-#include <Rocket/Core/Types.h>
-#include <Rocket/Core/Log.h>
-#include <Rocket/Core/Stream.h>
-#include <Rocket/Core/StringUtilities.h>
-#include <Rocket/Core/LinearGradient.h>
-#include <typeinfo>
-#include <stdlib.h>
-#include <stdio.h>
+#include <Rocket/Core/PropertyParser.h>
+#include "PropertyParserNumber.h"
+#include "PropertyParserColour.h"
+#include <vector>
 
 namespace Rocket {
 namespace Core {
 
 /**
-	Templatised TypeConverters with Template Specialisation.
+	A property parser that parses linear gradients.
 
-	These converters convert from source types to destination types.
-	They're mainly useful in things like dictionaries and serialisers.
-
-	@author Lloyd Weehuizen
+	@author Robert H
  */
 
-template <typename SourceType, typename DestType>
-class TypeConverter 
+class PropertyParserLinearGradient : public PropertyParser
 {
-public:	
-	static bool Convert(const SourceType& src, DestType& dest);
-};
+public:
+	PropertyParserLinearGradient();
+	virtual ~PropertyParserLinearGradient();
 
-#include <Rocket/Core/TypeConverter.inl>
+	/// Called to parse a RCSS colour declaration.
+	/// @param[out] property The property to set the parsed value on.
+	/// @param[in] value The raw value defined for this property.
+	/// @param[in] parameters The parameters defined for this property; not used for this parser.
+	/// @return True if the value was parsed successfully, false otherwise.
+	virtual bool ParseValue(Property& property, const String& value, const ParameterMap& parameters) const;
+
+	/// Destroys the parser.
+	virtual void Release();
+private:
+	PropertyParserNumber LocalNumberParser;
+	PropertyParserColour LocalColourParser;
+};
 
 }
 }

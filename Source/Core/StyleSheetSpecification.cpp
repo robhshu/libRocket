@@ -31,6 +31,7 @@
 #include "PropertyParserColour.h"
 #include "PropertyParserKeyword.h"
 #include "PropertyParserString.h"
+#include "PropertyParserLinearGradient.h"
 
 namespace Rocket {
 namespace Core {
@@ -142,6 +143,7 @@ void StyleSheetSpecification::RegisterDefaultParsers()
 	RegisterParser("keyword", new PropertyParserKeyword());
 	RegisterParser("string", new PropertyParserString());
 	RegisterParser(COLOR, new PropertyParserColour());
+	RegisterParser("gradient", new PropertyParserLinearGradient());
 }
 
 // Registers Rocket's default style properties.
@@ -233,6 +235,9 @@ void StyleSheetSpecification::RegisterDefaultProperties()
 		.AddParser("number");
 	RegisterProperty(VISIBILITY, "visible", false, false).AddParser("keyword", "visible, hidden");
 
+	RegisterProperty(BACKGROUND_IMAGE, "none", false)
+		.AddParser("keyword", "none")
+		.AddParser("gradient");
 	// Need some work on this if we are to include images.
 	RegisterProperty(BACKGROUND_COLOR, "transparent", false, false).AddParser(COLOR);
 	RegisterShorthand(BACKGROUND, BACKGROUND_COLOR);

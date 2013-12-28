@@ -75,6 +75,7 @@ const String OVERFLOW_X = "overflow-x";
 const String OVERFLOW_Y = "overflow-y";
 const String CLIP = "clip";
 const String VISIBILITY = "visibility";
+const String BACKGROUND_IMAGE = "background-image";
 const String BACKGROUND_COLOR = "background-color";
 const String BACKGROUND = "background";
 const String COLOR = "color";

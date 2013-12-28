@@ -1557,7 +1557,8 @@ void Element::OnPropertyChange(const PropertyNameList& changed_properties)
 
 	// Dirty the background if it's changed.
 	if (all_dirty ||
-		changed_properties.find(BACKGROUND_COLOR) != changed_properties.end())
+		changed_properties.find(BACKGROUND_COLOR) != changed_properties.end() ||
+		changed_properties.find(BACKGROUND_IMAGE) != changed_properties.end())
 		background->DirtyBackground();
 
 	// Dirty the border if it's changed.

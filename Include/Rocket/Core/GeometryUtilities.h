@@ -63,6 +63,9 @@ public:
 	/// @param[in] index_offset The offset to be added to the generated indices; this should be the number of vertices already in the array.
 	static void GenerateQuad(Vertex* vertices, int* indices, const Vector2f& origin, const Vector2f& dimensions, const Colourb& colour, const Vector2f& top_left_texcoord, const Vector2f& bottom_right_texcoord, int index_offset = 0);
 
+
+	static void GenerateQuadGrad(Vertex* vertices, int* indices, const Vector2f& origin, const Vector2f& dimensions, const Colourb* colours, int index_offset = 0);
+
 private:
 	GeometryUtilities();
 	~GeometryUtilities();

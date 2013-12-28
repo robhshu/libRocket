@@ -25,38 +25,45 @@
  *
  */
 
-#ifndef ROCKETCORETYPECONVERTER_H
-#define ROCKETCORETYPECONVERTER_H
+#ifndef ROCKETCORELINEARGRADIENT_H
+#define ROCKETCORELINEARGRADIENT_H
 
+#include <Rocket/Core/Header.h>
+#include <Rocket/Core/ReferenceCountable.h>
 #include <Rocket/Core/Types.h>
-#include <Rocket/Core/Log.h>
-#include <Rocket/Core/Stream.h>
-#include <Rocket/Core/StringUtilities.h>
-#include <Rocket/Core/LinearGradient.h>
-#include <typeinfo>
-#include <stdlib.h>
-#include <stdio.h>
 
 namespace Rocket {
 namespace Core {
 
 /**
-	Templatised TypeConverters with Template Specialisation.
-
-	These converters convert from source types to destination types.
-	They're mainly useful in things like dictionaries and serialisers.
-
-	@author Lloyd Weehuizen
+	Linear gradient
+	@author Robert H
  */
 
-template <typename SourceType, typename DestType>
-class TypeConverter 
+class LinearGradient
 {
-public:	
-	static bool Convert(const SourceType& src, DestType& dest);
-};
+public:
+	float direction;
+	Colourb top;
+	Colourb bottom;
 
-#include <Rocket/Core/TypeConverter.inl>
+	LinearGradient( )
+	{
+		direction = 0.0f; // unused for now
+		top.red = top.green = top.blue = top.alpha = 0;
+		bottom.red = bottom.green = bottom.blue = bottom.alpha = 0;
+	}
+
+	virtual ~LinearGradient( )
+	{
+	}
+
+	// Destroys the instance
+	void Release( )
+	{
+		delete this;
+	}
+};
 
 }
 }

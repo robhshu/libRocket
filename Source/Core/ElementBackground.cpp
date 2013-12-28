@@ -65,45 +65,89 @@ void ElementBackground::DirtyBackground()
 // Generates the background geometry for the element.
 void ElementBackground::GenerateBackground()
 {
-	// Fetch the new colour for the background. If the colour is transparent, then we don't render any background.
-	Colourb colour = element->GetProperty(BACKGROUND_COLOR)->value.Get< Colourb >();
-	if (colour.alpha <= 0)
+	const Property* bgProp = element->GetProperty(BACKGROUND_IMAGE);
+	
+	if( bgProp->unit == Property::LINEAR_GRADIENT )
 	{
-		geometry.GetVertices().clear();
-		geometry.GetIndices().clear();
-		geometry.Release();
-
-		return;
-	}
-
-	// Work out how many boxes we need to generate geometry for.
-	int num_boxes = 0;
-
-	for (int i = 0; i < element->GetNumBoxes(); ++i)
-	{
-		const Box& box = element->GetBox(i);
-		Vector2f size = box.GetSize(Box::PADDING);
-		if (size.x > 0 && size.y > 0)
-			num_boxes++;
-	}
-
-	std::vector< Vertex >& vertices = geometry.GetVertices();
-	std::vector< int >& indices = geometry.GetIndices();
-
-	int index_offset = 0;
-	vertices.resize(4 * num_boxes);
-	indices.resize(6 * num_boxes);
-
-	if (num_boxes > 0)
-	{
-		Vertex* raw_vertices = &vertices[0];
-		int* raw_indices = &indices[0];
+		const LinearGradient & bgGrad = bgProp->value.Get< LinearGradient >( );
+		
+		int num_boxes = 0;
 
 		for (int i = 0; i < element->GetNumBoxes(); ++i)
-			GenerateBackground(raw_vertices, raw_indices, index_offset, element->GetBox(i), colour);
-	}
+		{
+			const Box& box = element->GetBox(i);
+			Vector2f size = box.GetSize(Box::PADDING);
+			if (size.x > 0 && size.y > 0)
+				num_boxes++;
+		}
 
-	geometry.Release();
+		std::vector< Vertex >& vertices = geometry.GetVertices();
+		std::vector< int >& indices = geometry.GetIndices();
+		std::vector< Colourb > colours;
+		
+		int index_offset = 0;
+		vertices.resize(4 * num_boxes);
+		indices.resize(6 * num_boxes);
+		colours.resize(4);
+		
+		if (num_boxes > 0)
+		{
+			colours[0] = colours[1] = bgGrad.top;
+			colours[2] = colours[3] = bgGrad.bottom;
+
+			Vertex* raw_vertices = &vertices[0];
+			int* raw_indices = &indices[0];
+			Colourb* raw_colour = &colours[0];
+
+			for (int i = 0; i < element->GetNumBoxes(); ++i)
+				GenerateBackgroundGrad(raw_vertices, raw_indices, index_offset, element->GetBox(i), raw_colour);
+		}
+
+		geometry.Release();
+
+	}
+	else
+	{
+		// Fetch the new colour for the background. If the colour is transparent, then we don't render any background.
+		Colourb colour = element->GetProperty(BACKGROUND_COLOR)->value.Get< Colourb >();
+		if (colour.alpha <= 0)
+		{
+			geometry.GetVertices().clear();
+			geometry.GetIndices().clear();
+			geometry.Release();
+
+			return;
+		}
+
+		// Work out how many boxes we need to generate geometry for.
+		int num_boxes = 0;
+
+		for (int i = 0; i < element->GetNumBoxes(); ++i)
+		{
+			const Box& box = element->GetBox(i);
+			Vector2f size = box.GetSize(Box::PADDING);
+			if (size.x > 0 && size.y > 0)
+				num_boxes++;
+		}
+
+		std::vector< Vertex >& vertices = geometry.GetVertices();
+		std::vector< int >& indices = geometry.GetIndices();
+
+		int index_offset = 0;
+		vertices.resize(4 * num_boxes);
+		indices.resize(6 * num_boxes);
+
+		if (num_boxes > 0)
+		{
+			Vertex* raw_vertices = &vertices[0];
+			int* raw_indices = &indices[0];
+
+			for (int i = 0; i < element->GetNumBoxes(); ++i)
+				GenerateBackground(raw_vertices, raw_indices, index_offset, element->GetBox(i), colour);
+		}
+
+		geometry.Release();
+	}
 }
 
 // Generates the background geometry for a single box.
@@ -115,6 +159,21 @@ void ElementBackground::GenerateBackground(Vertex*& vertices, int*& indices, int
 		return;
 
 	GeometryUtilities::GenerateQuad(vertices, indices, box.GetOffset(), padded_size, colour, index_offset);
+
+	vertices += 4;
+	indices += 6;
+	index_offset += 4;
+}
+
+// Generates the background geometry for a single box with a gradient.
+void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const Colourb* colours)
+{
+	Vector2f padded_size = box.GetSize(Box::PADDING);
+	if (padded_size.x <= 0 ||
+		padded_size.y <= 0)
+		return;
+
+	GeometryUtilities::GenerateQuadGrad(vertices, indices, box.GetOffset(), padded_size, colours, index_offset);
 
 	vertices += 4;
 	indices += 6;

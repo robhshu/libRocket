@@ -41,6 +41,10 @@ PropertyParserNumber::PropertyParserNumber()
 	unit_suffixes.push_back(UnitSuffix(Property::PT, "pt"));
 	unit_suffixes.push_back(UnitSuffix(Property::PC, "pc"));
 	unit_suffixes.push_back(UnitSuffix(Property::PERCENT, "%"));
+	unit_suffixes.push_back(UnitSuffix(Property::DEG, "deg"));
+	unit_suffixes.push_back(UnitSuffix(Property::GRAD, "grad"));
+	unit_suffixes.push_back(UnitSuffix(Property::RAD, "rad"));
+	unit_suffixes.push_back(UnitSuffix(Property::TURN, "turn"));
 }
 
 PropertyParserNumber::~PropertyParserNumber()

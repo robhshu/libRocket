@@ -37,6 +37,8 @@ Variant::Variant() : type(NONE)
 	ROCKET_STATIC_ASSERT(sizeof(Colourb) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_Colourb);
 	ROCKET_STATIC_ASSERT(sizeof(Colourf) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_Colourf);
 	ROCKET_STATIC_ASSERT(sizeof(String) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_String);
+
+	ROCKET_STATIC_ASSERT(sizeof(LinearGradient) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_LinearGradients);
 }
 
 Variant::Variant( const Variant& copy ) : type(NONE)
@@ -61,7 +63,7 @@ void Variant::Clear()
 			string->~String();
 		}
 		break;
-			
+		
 		default:
 		break;
 	}
@@ -174,6 +176,12 @@ void Variant::Set(ScriptInterface* value)
 {
 	type = SCRIPTINTERFACE;
 	memcpy(data, &value, sizeof(ScriptInterface*));
+}
+
+void Variant::Set(const LinearGradient& value)
+{
+	type = LINEARGRADIENT;
+	memcpy(data, &value, sizeof(LinearGradient));
 }
 
 Variant& Variant::operator=(const Variant& copy)

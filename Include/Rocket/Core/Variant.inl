@@ -77,7 +77,11 @@ bool Variant::GetInto(T& value) const
 		case SCRIPTINTERFACE:
 			return TypeConverter< ScriptInterface*, T >::Convert((ScriptInterface*)data, value);			
 		break;
-
+		
+		case LINEARGRADIENT:
+			return TypeConverter< LinearGradient, T >::Convert(*(LinearGradient*)data, value);
+		break;
+		
 		case VOIDPTR:
 			return TypeConverter< void*, T >::Convert((void*)data, value);
 		break;

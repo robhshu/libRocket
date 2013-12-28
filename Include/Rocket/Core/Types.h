@@ -96,4 +96,6 @@ typedef Dictionary ElementAttributes;
 }
 }
 
+#include <Rocket/Core/LinearGradient.h>
+
 #endif

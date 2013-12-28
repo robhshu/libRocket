@@ -72,6 +72,7 @@ public:
 		VECTOR2 = '2',
 		COLOURF = 'g',
 		COLOURB = 'h',
+		LINEARGRADIENT = 'l',
 		SCRIPTINTERFACE = 'p',
 		VOIDPTR = '*',			
 	};
@@ -122,6 +123,8 @@ public:
 	/// Sets a script object value on this variant.
 	/// @param[in] value New value to set.
 	void Set(ScriptInterface* value);
+
+	void Set(const LinearGradient& value);
 
 	/// Templatised data accessor. TypeConverters will be used to attempt to convert from the
 	/// internal representation to the requested representation.

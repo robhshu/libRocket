@@ -78,6 +78,7 @@ extern const String OVERFLOW_X;
 extern const String OVERFLOW_Y;
 extern const String CLIP;
 extern const String VISIBILITY;
+extern const String BACKGROUND_IMAGE;
 extern const String BACKGROUND_COLOR;
 extern const String BACKGROUND;
 extern const String COLOR;
