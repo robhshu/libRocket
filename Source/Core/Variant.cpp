@@ -38,7 +38,7 @@ Variant::Variant() : type(NONE)
 	ROCKET_STATIC_ASSERT(sizeof(Colourf) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_Colourf);
 	ROCKET_STATIC_ASSERT(sizeof(String) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_String);
 
-	ROCKET_STATIC_ASSERT(sizeof(LinearGradient) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_LinearGradients);
+	//ROCKET_STATIC_ASSERT(sizeof(LinearGradient) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_LinearGradients);
 }
 
 Variant::Variant( const Variant& copy ) : type(NONE)
@@ -63,6 +63,13 @@ void Variant::Clear()
 			string->~String();
 		}
 		break;
+
+		//case LINEARGRADIENT:
+		//{
+		//	LinearGradient* grad = (LinearGradient*)data;
+		//	grad->Release();
+		//}
+		//break;
 		
 		default:
 		break;
@@ -91,7 +98,20 @@ void Variant::Set(const Variant& copy)
 			Set(*(String*)copy.data);
 		}
 		break;
-			
+
+		case LINEARGRADIENT:
+		{
+			if( this != &copy )
+			{
+				// Make new copy of gradient
+				LinearGradient *pGrad = new LinearGradient( *copy.Get<LinearGradient* >( ) );
+
+				Clear();
+				Set(pGrad);
+			}
+		}
+		break;
+
 		default:
 			Clear();
 			memcpy(data, copy.data, LOCAL_DATA_SIZE);
@@ -178,10 +198,11 @@ void Variant::Set(ScriptInterface* value)
 	memcpy(data, &value, sizeof(ScriptInterface*));
 }
 
-void Variant::Set(const LinearGradient& value)
+void Variant::Set(LinearGradient* value)
 {
 	type = LINEARGRADIENT;
-	memcpy(data, &value, sizeof(LinearGradient));
+	SET_VARIANT(LinearGradient*);
+	//memcpy(data, &value, sizeof(LinearGradient*));
 }
 
 Variant& Variant::operator=(const Variant& copy)

@@ -69,7 +69,7 @@ void ElementBackground::GenerateBackground()
 	
 	if( bgProp->unit == Property::LINEAR_GRADIENT )
 	{
-		const LinearGradient & bgGrad = bgProp->value.Get< LinearGradient >( );
+		const LinearGradient * bgGrad = bgProp->value.Get< LinearGradient* >( );
 		
 		int num_boxes = 0;
 
@@ -83,26 +83,30 @@ void ElementBackground::GenerateBackground()
 
 		std::vector< Vertex >& vertices = geometry.GetVertices();
 		std::vector< int >& indices = geometry.GetIndices();
-		std::vector< Colourb > colours;
-		
-		int index_offset = 0;
-		vertices.resize(4 * num_boxes);
-		indices.resize(6 * num_boxes);
-		colours.resize(4);
-		
-		if (num_boxes > 0)
+
+		const unsigned int stopCount = bgGrad->colour_list.size();
+
+		if( stopCount > 1 )
 		{
-			colours[0] = colours[1] = bgGrad.top;
-			colours[2] = colours[3] = bgGrad.bottom;
+			int index_offset = 0;
+			vertices.resize(4 * num_boxes * (stopCount-1) );
+			indices.resize(6 * num_boxes * (stopCount-1) );
 
-			Vertex* raw_vertices = &vertices[0];
-			int* raw_indices = &indices[0];
-			Colourb* raw_colour = &colours[0];
+			LinearGradientColours gradColours;
+			GenerateColourList(gradColours, bgGrad);
 
-			for (int i = 0; i < element->GetNumBoxes(); ++i)
-				GenerateBackgroundGrad(raw_vertices, raw_indices, index_offset, element->GetBox(i), raw_colour);
+			const int gradUnit = ConvertGradientUnit(bgGrad);
+			const bool bHorizontal = ( gradUnit == 1 || gradUnit == 3 );
+
+			if (num_boxes > 0 && stopCount > 0 )
+			{
+				Vertex* raw_vertices = &vertices[0];
+				int* raw_indices = &indices[0];
+
+				for (int i = 0; i < element->GetNumBoxes(); ++i)
+					GenerateBackgroundGrad(raw_vertices, raw_indices, index_offset, element->GetBox(i), gradColours, bHorizontal);
+			}
 		}
-
 		geometry.Release();
 
 	}
@@ -166,18 +170,78 @@ void ElementBackground::GenerateBackground(Vertex*& vertices, int*& indices, int
 }
 
 // Generates the background geometry for a single box with a gradient.
-void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const Colourb* colours)
+void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const LinearGradientColours& lgrad_colours, bool bHoriontal)
 {
 	Vector2f padded_size = box.GetSize(Box::PADDING);
 	if (padded_size.x <= 0 ||
 		padded_size.y <= 0)
 		return;
 
-	GeometryUtilities::GenerateQuadGrad(vertices, indices, box.GetOffset(), padded_size, colours, index_offset);
+	if( lgrad_colours.size() >= 2 )
+	{
+		std::vector< Colourb > colours;
+		colours.resize(4);
+	
+		Vector2f offset = box.GetOffset();
+		Vector2f step(0, 0);
 
-	vertices += 4;
-	indices += 6;
-	index_offset += 4;
+		if( bHoriontal )
+		{
+			const float fStep_x = padded_size.x / static_cast<float >(lgrad_colours.size()-1);
+			step.x = fStep_x;
+			padded_size.x = fStep_x;
+		}
+		else
+		{
+			const float fStep_y = padded_size.y / static_cast<float >(lgrad_colours.size()-1);
+			step.y = fStep_y;
+			padded_size.y = fStep_y;
+		}
+
+		for( LinearGradientColours::size_type i=0; i<lgrad_colours.size()-1; i++ )
+		{
+			if( bHoriontal )
+			{
+				colours[0] = colours[3] = lgrad_colours[i];
+				colours[1] = colours[2] = lgrad_colours[i+1];
+			}
+			else
+			{
+				colours[0] = colours[1] = lgrad_colours[i];
+				colours[2] = colours[3] = lgrad_colours[i+1];
+			}
+
+			GeometryUtilities::GenerateQuadGrad(vertices, indices, offset, padded_size, &colours[0], index_offset);
+
+			vertices += 4;
+			indices += 6;
+			index_offset += 4;
+
+			offset += step;
+		}
+	}
+}
+
+// Placeholder function
+int ElementBackground::ConvertGradientUnit( const LinearGradient *lgrad_desc )
+{
+	if( lgrad_desc->angle_deg == 90 ) return 1;
+	if( lgrad_desc->angle_deg == 180 ) return 2;
+	if( lgrad_desc->angle_deg == 270 ) return 3;
+
+	return 0;
+}
+
+void ElementBackground::GenerateColourList( LinearGradientColours &refColours, const LinearGradient *lgrad_desc )
+{
+	// Make copy
+	refColours = lgrad_desc->colour_list;
+
+	const int gradUnit = ConvertGradientUnit( lgrad_desc );
+
+	// 'to left' or 'to bottom'
+	if( gradUnit == 0 || gradUnit == 3 )
+		std::reverse(refColours.begin(), refColours.end());
 }
 
 }

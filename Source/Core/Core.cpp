@@ -53,7 +53,7 @@ typedef std::map< String, Context* > ContextMap;
 static ContextMap contexts;
 
 #ifndef ROCKET_VERSION
-	#define ROCKET_VERSION "custom"
+	#define ROCKET_VERSION "1.2.1-dev"
 #endif
 
 /**

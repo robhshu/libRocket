@@ -113,9 +113,9 @@ PASS_THROUGH(LinearGradient);
 class ScriptInterface;
 typedef ScriptInterface* ScriptInterfacePtr;
 PASS_THROUGH(ScriptInterfacePtr);
-//class LinearGradient;
-//typedef LinearGradient* LinearGradientPtr;
-//PASS_THROUGH(LinearGradientPtr);
+class LinearGradient;
+typedef LinearGradient* LinearGradientPtr;
+PASS_THROUGH(LinearGradientPtr);
 typedef void* voidPtr;
 PASS_THROUGH(voidPtr);
 
@@ -343,18 +343,6 @@ public:
 	}
 };
 
-template<>
-class TypeConverter< LinearGradient, String >
-{
-public:
-	static bool Convert(const LinearGradient& ROCKET_UNUSED(src), String& dest)
-	{
-		// temp for debug console
-		dest = "linear-gradient";
-		return true;
-	}
-};
-
 template< typename SourceType, typename InternalType, int count >
 class TypeConverterVectorString
 {
@@ -391,6 +379,25 @@ VECTOR_STRING_CONVERTER(Vector2i, int, 2);
 VECTOR_STRING_CONVERTER(Vector2f, float, 2);
 VECTOR_STRING_CONVERTER(Colourf, float, 4);
 VECTOR_STRING_CONVERTER(Colourb, byte, 4);
+
+template<>
+class TypeConverter< LinearGradient*, String >
+{
+public:
+	static bool Convert(const LinearGradient* src, String& dest)
+	{
+		dest.FormatString(32, "linear-gradient(%.0fdeg", src->angle_deg);
+		
+		String tmp;
+		for( LinearGradientColours::size_type i=0; i<src->colour_list.size(); i++ )
+			if( TypeConverter<Colourb, String>::Convert(src->colour_list[i], tmp) )
+				dest += tmp;
+		
+		dest += ")";
+		return true;
+	}
+};
+
 #undef PASS_THROUGH
 #undef BASIC_CONVERTER
 #undef BASIC_CONVERTER_BOOL

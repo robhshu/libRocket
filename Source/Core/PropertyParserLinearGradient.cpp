@@ -45,36 +45,47 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 	if (value.Empty())
 		return false;
 
-	LinearGradient linGrad;
+	LinearGradient *linGrad = new LinearGradient();
 
 	if (value.Substring(0, 15) == "linear-gradient")
 	{
-		Log::Message(Log::LT_INFO, "Parsing linear gradient '%s'", value.CString());
-
 		StringList values;
 
 		int find = value.Find("(") + 1;
 		StringUtilities::ExpandString(values, value.Substring(find, value.RFind(")") - find), ',');
 
-		if( values.size() >= 3 )
+		if( values.size() >= 2 )
 		{
 			Property tmp;
+			int vIdx = 0;
 
-			if( LocalNumberParser.ParseValue( tmp, values[0], parameters ) )
-				linGrad.direction = tmp.Get<float>( );
+			// May start with angle OR begin with a colour list
 
-			Log::Message(Log::LT_INFO, "Expected number '%s' %f", values[0].CString(), linGrad.direction);
-			
-			
-			if( LocalColourParser.ParseValue( tmp, values[1], parameters ) )
-				linGrad.top = tmp.Get< Colourb >( );
+			if( LocalNumberParser.ParseValue( tmp, values[vIdx], parameters ) )
+			{
+				linGrad->angle_deg = tmp.Get<float>( );
+				vIdx++;
+			}
 
-			Log::Message(Log::LT_INFO, "Expected colour '%s' %u", values[1].CString(), linGrad.top.red);
+			// TODO: Stop value between 0 and 100%
 
-			if( LocalColourParser.ParseValue( tmp, values[2], parameters ) )
-				linGrad.bottom = tmp.Get< Colourb >( );
+			Rocket::Core::String colour_string;
 
-			Log::Message(Log::LT_INFO, "Expected colour '%s' %u", values[2].CString(), linGrad.bottom.red);
+			for( ; vIdx < values.size(); )
+			{
+				if( LocalColourParser.ParseValue( tmp, values[vIdx], parameters ) )
+				{
+					const Colourb colRes = tmp.Get< Colourb >( );
+
+					Rocket::Core::TypeConverter< Rocket::Core::Colourb, Rocket::Core::String >::Convert(colRes, colour_string);
+					Log::Message(Log::LT_INFO, "Converted colour '%s'=>%s", values[vIdx].CString(), colour_string.CString());
+
+					linGrad->AddColour( colRes );
+					vIdx++;
+				}
+				else
+					break;
+			}
 		}
 	}
 

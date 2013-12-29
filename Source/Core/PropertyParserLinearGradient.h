@@ -31,7 +31,6 @@
 #include <Rocket/Core/PropertyParser.h>
 #include "PropertyParserNumber.h"
 #include "PropertyParserColour.h"
-#include <vector>
 
 namespace Rocket {
 namespace Core {

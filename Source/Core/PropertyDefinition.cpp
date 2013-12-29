@@ -131,6 +131,13 @@ bool PropertyDefinition::GetValue(String& value, const Property& property) const
 		}
 		break;
 
+		case Property::LINEAR_GRADIENT:
+		{
+			const LinearGradient *pGrad = property.value.Get<LinearGradient* >();
+			value.FormatString(32, "linear-gradient(%.0fdeg, %u points)", pGrad->angle_deg, pGrad->colour_list.size());
+		}
+		break;
+
 		case Property::PX:		value.Append("px"); break;
 		case Property::EM:		value.Append("em"); break;
 		case Property::PERCENT:	value.Append("%"); break;
@@ -139,6 +146,11 @@ bool PropertyDefinition::GetValue(String& value, const Property& property) const
 		case Property::MM:		value.Append("mm"); break;
 		case Property::PT:		value.Append("pt"); break;
 		case Property::PC:		value.Append("pc"); break;
+		case Property::DEG:		value.Append("deg"); break;
+		case Property::GRAD:	value.Append("grad"); break;
+		case Property::RAD:		value.Append("rad"); break;
+		case Property::TURN:	value.Append("turn"); break;
+
 		default:					break;
 	}
 

@@ -93,6 +93,8 @@ typedef std::set< String > PropertyNameList;
 typedef std::set< String > AttributeNameList;
 typedef Dictionary ElementAttributes;
 
+class LinearGradient;
+
 }
 }
 

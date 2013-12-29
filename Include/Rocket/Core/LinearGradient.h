@@ -28,9 +28,8 @@
 #ifndef ROCKETCORELINEARGRADIENT_H
 #define ROCKETCORELINEARGRADIENT_H
 
-#include <Rocket/Core/Header.h>
-#include <Rocket/Core/ReferenceCountable.h>
 #include <Rocket/Core/Types.h>
+#include <vector>
 
 namespace Rocket {
 namespace Core {
@@ -39,26 +38,33 @@ namespace Core {
 	Linear gradient
 	@author Robert H
  */
+typedef std::vector<Colourb > LinearGradientColours;
 
 class LinearGradient
 {
 public:
-	float direction;
-	Colourb top;
-	Colourb bottom;
+	float angle_deg;
+	LinearGradientColours colour_list;
 
 	LinearGradient( )
 	{
-		direction = 0.0f; // unused for now
-		top.red = top.green = top.blue = top.alpha = 0;
-		bottom.red = bottom.green = bottom.blue = bottom.alpha = 0;
+		angle_deg = 0;
 	}
 
-	virtual ~LinearGradient( )
+	LinearGradient( const LinearGradient& rhs )
 	{
+		if( this == &rhs )
+			return;
+
+		angle_deg = rhs.angle_deg;
+		colour_list = rhs.colour_list;
 	}
 
-	// Destroys the instance
+	void AddColour( const Colourb &colour, float ROCKET_UNUSED(fStop) = 0.0f )
+	{
+		colour_list.push_back( colour );
+	}
+
 	void Release( )
 	{
 		delete this;
