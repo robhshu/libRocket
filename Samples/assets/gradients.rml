@@ -1,0 +1,57 @@
+<rml>
+	<head>
+		<title>gradients</title>
+    
+    <!-- See 'Using CSS gradients' https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_gradients -->
+    
+    <link type="text/rcss" href="rkt.rcss"/>
+		<style>
+      body
+      {
+        font-family: Delicious;
+        padding: 50px;
+        padding-top: 25px;
+      }
+      div
+      {
+        text-align: center;
+        color: black;
+        font-size: 20px;
+        float: left;
+        width: 100px;
+        height: 100px;
+        margin: 25px;
+      }
+      #grad_1
+      {
+        background-image: linear-gradient(white, rgb(255, 0, 0));
+      }
+      #grad_2
+      {
+        background-image: linear-gradient(90deg, #ffffff, rgb(255, 0, 0));
+      }
+      #grad_3
+      {
+        background-image: linear-gradient(180deg, rgb(255, 255, 255), red);
+      }
+      #grad_4
+      {
+        background-image: linear-gradient(270deg, white 0%, #ff0000 100%);
+      }
+    </style>
+	</head>
+	<body>
+    <div id="grad_1">
+      0deg
+    </div>
+    <div id="grad_2">
+      90deg
+    </div>
+    <div id="grad_3">
+      180deg
+    </div>
+    <div id="grad_4">
+      270deg
+    </div>
+  </body>
+</rml>

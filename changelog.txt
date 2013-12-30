@@ -1,8 +1,14 @@
 libRocket changelog
 
+v1.2.1-dev
+December 2013
+==========================================
+Features:
+ * Added the 'linear-gradient' property
+
 v1.2.1
 1 December 2010
-
+==========================================
 Features:
  * Added SFML sample (Thanks to Nuno Silva)
  * Added CMake files for Mac, Linux and Windows (not fully tested on Windows, Thanks to Hilton Medeiro)
