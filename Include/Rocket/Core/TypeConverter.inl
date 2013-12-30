@@ -391,9 +391,9 @@ public:
 		String tmp;
 		for( LinearGradientColours::size_type i=0; i<src->colour_list.size(); i++ )
 			if( TypeConverter<Colourb, String>::Convert(src->colour_list[i], tmp) )
-				dest += tmp;
+				dest.Append( ", rgba(" + tmp + ")");
 		
-		dest += ")";
+		dest.Append(")");
 		return true;
 	}
 };

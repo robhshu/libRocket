@@ -127,17 +127,10 @@ bool PropertyDefinition::GetValue(String& value, const Property& property) const
 		case Property::COLOUR:
 		{
 			Colourb colour = property.value.Get< Colourb >();
-			value.FormatString(32, "rgb(%d,%d,%d,%d)", colour.red, colour.green, colour.blue, colour.alpha);
+			value.FormatString(32, "rgba(%d,%d,%d,%d)", colour.red, colour.green, colour.blue, colour.alpha);
 		}
 		break;
-
-		case Property::LINEAR_GRADIENT:
-		{
-			const LinearGradient *pGrad = property.value.Get<LinearGradient* >();
-			value.FormatString(32, "linear-gradient(%.0fdeg, %u points)", pGrad->angle_deg, pGrad->colour_list.size());
-		}
-		break;
-
+		
 		case Property::PX:		value.Append("px"); break;
 		case Property::EM:		value.Append("em"); break;
 		case Property::PERCENT:	value.Append("%"); break;
