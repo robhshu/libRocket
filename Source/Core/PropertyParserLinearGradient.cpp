@@ -56,36 +56,43 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 
 		if( values.size() >= 2 )
 		{
-			Property tmp;
+			Property stop_val, stop_perc;
 			int vIdx = 0;
 
-			// May start with angle OR begin with a colour list
-
-			if( LocalNumberParser.ParseValue( tmp, values[vIdx], parameters ) )
+			if( LocalNumberParser.ParseValue( stop_val, values[vIdx], parameters ) )
 			{
-				linGrad->angle_deg = tmp.Get<float>( );
+				if( stop_val.unit != Property::DEG )
+					Log::Message(Log::LT_WARNING, "Unsupported linear gradient orientation");
+
+				linGrad->angle_deg = stop_val.Get<float>( );
 				vIdx++;
 			}
 
-			// TODO: Stop value between 0 and 100%
-
-			Rocket::Core::String colour_string;
+			String colour_string;
+			String fixed_colour;
 
 			for( ; vIdx < values.size(); )
 			{
-				if( LocalColourParser.ParseValue( tmp, values[vIdx], parameters ) )
+				stop_perc.unit = Property::UNKNOWN;
+
+				if( FixupColour( values, vIdx, fixed_colour ) && PreParseColourStopValue( stop_val, stop_perc, fixed_colour, parameters ) )
 				{
-					const Colourb colRes = tmp.Get< Colourb >( );
+					Log::Message(Log::LT_INFO, "Source colour %s", fixed_colour.CString());
 
-					Rocket::Core::TypeConverter< Rocket::Core::Colourb, Rocket::Core::String >::Convert(colRes, colour_string);
-					Log::Message(Log::LT_INFO, "Converted colour '%s'=>%s", values[vIdx].CString(), colour_string.CString());
+					const Colourb colRes = stop_val.Get< Colourb >( );
 
-					linGrad->AddColour( colRes );
-					vIdx++;
+					float fPerc = 0;
+
+					if( stop_perc.unit == Property::PERCENT )
+						fPerc = stop_perc.Get<float >();
+
+					linGrad->AddColour( colRes, fPerc );
 				}
-				else
-					break;
+				else break;
 			}
+
+			if( linGrad->colour_list.size() < 2 )
+				Log::Message(Log::LT_WARNING, "Too few colour stops for linear-gradient");
 		}
 	}
 
@@ -99,6 +106,62 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 void PropertyParserLinearGradient::Release()
 {
 	delete this;
+}
+
+// Identifies colour definitions which also use bracket parameters
+bool PropertyParserLinearGradient::FixupColour( const StringList &rStrs, int &rIdx, String &refString ) const
+{
+	const String &value = rStrs[rIdx++];
+	
+	String nvalue = value;
+
+	if( value.Substring(0, 3) == "rgb" )
+	{
+		if( rIdx + 2 <= rStrs.size() )
+		{
+			// Join the RGB colour back
+			nvalue += "," + rStrs[rIdx] + "," + rStrs[rIdx+1];
+			rIdx += 2;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	refString = nvalue;
+	
+	return true;
+}
+
+// Parses colour and stop value from string
+bool PropertyParserLinearGradient::PreParseColourStopValue(Property& colProp, Property& stopProp, const String& value, const ParameterMap& parameters) const
+{
+	String str_colour, str_stop;
+	bool bHasStop = false;
+
+	int spacePos = value.RFind(" ");
+	if( spacePos > 0 )
+	{
+		str_colour = value.Substring(0, spacePos);
+		str_stop = value.Substring(spacePos);
+		bHasStop = true;
+	}
+	else
+	{
+		str_colour = value;
+	}
+
+
+	if( LocalColourParser.ParseValue( colProp, str_colour, parameters ) )
+	{
+		if( bHasStop )
+			return LocalNumberParser.ParseValue( stopProp, str_stop, parameters );
+
+		return true;
+	}
+
+	return false;
 }
 
 }
