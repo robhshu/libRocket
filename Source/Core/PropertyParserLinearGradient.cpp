@@ -61,10 +61,12 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 
 			if( LocalNumberParser.ParseValue( stop_val, values[vIdx], parameters ) )
 			{
-				if( stop_val.unit != Property::DEG )
+				float fVal = 0.0f;
+
+				if( !AngleAsDegrees( stop_val, fVal ) )
 					Log::Message(Log::LT_WARNING, "Unsupported linear gradient orientation");
 
-				linGrad->angle_deg = stop_val.Get<float>( );
+				linGrad->angle_deg = fVal;
 				vIdx++;
 			}
 
@@ -81,12 +83,12 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 
 					const Colourb colRes = stop_val.Get< Colourb >( );
 
-					float fPerc = 0;
+					float fAngle = 0;
 
 					if( stop_perc.unit == Property::PERCENT )
-						fPerc = stop_perc.Get<float >();
+						fAngle = stop_perc.Get<float >();
 
-					linGrad->AddColour( colRes, fPerc );
+					linGrad->AddColour( colRes, fAngle );
 				}
 				else break;
 			}
@@ -106,6 +108,33 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 void PropertyParserLinearGradient::Release()
 {
 	delete this;
+}
+
+// Convert gradient angle to degrees
+bool PropertyParserLinearGradient::AngleAsDegrees( const Property& angProp, float &outAngle ) const
+{
+	const float fVal = angProp.Get<float>( );
+	
+	switch( angProp.unit )
+	{
+		case Property::DEG:
+			outAngle = fVal;
+		break;
+		case Property::GRAD:
+			outAngle = Math::GradiansToDegrees(fVal);
+		break;
+		case Property::RAD:
+			outAngle = Math::RadiansToDegrees(fVal);
+		break;
+		case Property::TURN:
+			outAngle = Math::TurnsToDegrees(fVal);
+		break;
+		default:
+			outAngle = 0.0f;
+			return false;
+	}
+
+	return true;		
 }
 
 // Identifies colour definitions which also use bracket parameters

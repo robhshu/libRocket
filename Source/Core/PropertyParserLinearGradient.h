@@ -60,6 +60,7 @@ private:
 	PropertyParserNumber LocalNumberParser;
 	PropertyParserColour LocalColourParser;
 
+	bool AngleAsDegrees( const Property& angProp, float &outAngle ) const;
 	bool FixupColour( const StringList &rStrs, int &rIdx, String &refString ) const; 
 
 	bool PreParseColourStopValue(Property& colProp, Property& stopProp, const String& value, const ParameterMap& parameters) const;

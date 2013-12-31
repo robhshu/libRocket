@@ -102,6 +102,18 @@ ROCKETCORE_API float RadiansToDegrees(float angle)
 	return angle * (180.0f / PI);
 }
 
+// Converts an angle from gradians to degrees.
+ROCKETCORE_API float GradiansToDegrees(float angle)
+{
+	return angle * 0.9f;
+}
+
+// Converts an angle from turns to degrees.
+ROCKETCORE_API float TurnsToDegrees(float angle)
+{
+	return angle * 360.0f;
+}
+
 // Converts an angle from degrees to radians.
 ROCKETCORE_API float DegreesToRadians(float angle)
 {

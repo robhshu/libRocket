@@ -120,6 +120,14 @@ ROCKETCORE_API float ATan2(float y, float x);
 /// @param[in] The angle, in radians.
 /// @return The angle converted to degrees.
 ROCKETCORE_API float RadiansToDegrees(float angle);
+/// Converts an angle from gradians to degrees.
+/// @param[in] The angle, in gradians.
+/// @return The angle converted to degrees.
+ROCKETCORE_API float GradiansToDegrees(float angle);
+/// Converts an angle from turns to degrees.
+/// @param[in] The angle, in turns.
+/// @return The angle converted to degrees.
+ROCKETCORE_API float TurnsToDegrees(float angle);
 /// Converts an angle from degrees to radians.
 /// @param[in] The angle, in degrees.
 /// @return The angle converted to radians.
