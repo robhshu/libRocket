@@ -45,6 +45,7 @@ PropertyParserNumber::PropertyParserNumber()
 	unit_suffixes.push_back(UnitSuffix(Property::GRAD, "grad"));
 	unit_suffixes.push_back(UnitSuffix(Property::RAD, "rad"));
 	unit_suffixes.push_back(UnitSuffix(Property::TURN, "turn"));
+	unit_suffixes.push_back(UnitSuffix(Property::SECONDS, "s"));
 }
 
 PropertyParserNumber::~PropertyParserNumber()
@@ -72,7 +73,8 @@ bool PropertyParserNumber::ParseValue(Property& property, const String& value, c
 		}
 	}
 
-	float float_value;
+	float float_value = 0.0f;
+
 	if (sscanf(value.CString(), "%f", &float_value) == 1)
 	{
 		property.value = Variant(float_value);

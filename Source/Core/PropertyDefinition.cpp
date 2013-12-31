@@ -143,6 +143,7 @@ bool PropertyDefinition::GetValue(String& value, const Property& property) const
 		case Property::GRAD:	value.Append("grad"); break;
 		case Property::RAD:		value.Append("rad"); break;
 		case Property::TURN:	value.Append("turn"); break;
+		case Property::SECONDS:	value.Append("s"); break;
 
 		default:					break;
 	}

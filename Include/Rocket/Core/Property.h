@@ -77,6 +77,8 @@ public:
 		RAD = 1 << 16,				// number suffixed by 'rad'; fetch as < float >
 		TURN = 1 << 17,				// number suffixed by 'turn'; fetch as < float >
 		ANGLE_UNIT = DEG | GRAD | RAD | TURN,
+
+		SECONDS = 1 << 18,			// number suffixed by 's'; fetch as < float >
 	};
 
 	Property();
