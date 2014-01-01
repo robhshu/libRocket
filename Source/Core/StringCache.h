@@ -97,6 +97,11 @@ extern const String DRAG;
 extern const String TAB_INDEX;
 extern const String SCROLLBAR_MARGIN;
 
+extern const String ANIMATION_NAME;
+extern const String ANIMATION_DURATION;
+extern const String ANIMATION_ITERATION_COUNT;
+extern const String ANIMATION;
+
 extern const String MOUSEDOWN;
 extern const String MOUSESCROLL;
 extern const String MOUSEOVER;

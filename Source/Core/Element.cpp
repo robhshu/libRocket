@@ -156,6 +156,25 @@ void Element::Update()
 	for (size_t i = 0; i < active_children.size(); i++)
 		active_children[i]->Update();
 
+	// Check for animations
+
+	const Property *animProp = GetProperty(ANIMATION_NAME);
+	if( animProp && animProp->unit == Property::STRING)
+	{
+		const KeyframeProperties *props = GetStyleSheet()->GetAnimation( animProp->Get<String >() );
+		if( props )
+		{
+			// TODO: Resolve animation
+
+			const PropertyMap &pmap = props->begin()->second.GetProperties();
+			
+			for( PropertyMap::const_iterator i=pmap.begin(); i!=pmap.end(); i++ )
+			{
+				style->SetProperty( i->first, i->second );
+			}
+		}
+	}
+
 	// Force a definition reload, if necessary.
 	style->GetDefinition();
 

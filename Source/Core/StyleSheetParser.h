@@ -34,6 +34,7 @@ namespace Core {
 class PropertyDictionary;
 class Stream;
 class StyleSheetNode;
+class StyleSheet;
 
 /**
 	Helper class for parsing a style sheet into its memory representation.
@@ -48,10 +49,11 @@ public:
 	~StyleSheetParser();
 
 	/// Parses the given stream into the style sheet
+	/// @param sheet The owner stylesheet
 	/// @param node The root node the stream will be parsed into
 	/// @param stream The stream to read
 	/// @return The number of parsed rules, or -1 if an error occured.
-	int Parse(StyleSheetNode* node, Stream* stream);	
+	int Parse(StyleSheet* sheet, StyleSheetNode* node, Stream* stream);
 
 	/// Parses the given string into the property dictionary
 	/// @param parsed_properties The properties dictionary the properties will be read into
@@ -97,6 +99,8 @@ private:
 
 	// Fill the internal parse buffer
 	bool FillBuffer();
+
+	bool ReadAtRule(StyleSheet* sheet, const String &rules);
 };
 
 }

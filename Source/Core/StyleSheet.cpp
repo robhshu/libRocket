@@ -66,7 +66,7 @@ StyleSheet::~StyleSheet()
 bool StyleSheet::LoadStyleSheet(Stream* stream)
 {
 	StyleSheetParser parser;
-	specificity_offset = parser.Parse(root, stream);
+	specificity_offset = parser.Parse(this, root, stream);
 	return specificity_offset >= 0;
 }
 
@@ -210,6 +210,31 @@ ElementDefinition* StyleSheet::GetElementDefinition(const Element* element) cons
 void StyleSheet::OnReferenceDeactivate()
 {
 	delete this;
+}
+
+void StyleSheet::ClearAnimationIndex( )
+{
+	anim_cache.clear();
+}
+
+void StyleSheet::AddAnimation(const String &name, const KeyframeProperties &frames)
+{
+	if( GetAnimation( name ) == NULL )
+		anim_cache[name] = frames;
+}
+
+const KeyframeProperties *StyleSheet::GetAnimation(const String &name)
+{
+	AnimationList::const_iterator i = anim_cache.find(name);
+
+	if( i != anim_cache.end() )
+	{
+		return &i->second;
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 }

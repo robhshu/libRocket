@@ -49,7 +49,73 @@ StyleSheetParser::~StyleSheetParser()
 {
 }
 
-int StyleSheetParser::Parse(StyleSheetNode* node, Stream* _stream)
+bool StyleSheetParser::ReadAtRule(StyleSheet* sheet, const String &rules)
+{
+	const String atRules = StringUtilities::StripWhitespace(rules);
+
+	if( atRules.Empty() || atRules[0] != '@' )
+	{
+		return false;
+	}
+
+	if( atRules.Substring(0, 10) != "@keyframes" )
+	{
+		Log::Message(Log::LT_ERROR, "Unsupported at-rule '%s' will not be parsed", atRules.CString());
+
+		return false;
+	}
+
+	String keyframe_stops;
+	
+	// NOTE: This is extremely dangerous
+	// If reading the token crosses the parse buffer the position will be invalid (< 0)
+
+	KeyframeProperties frames;
+
+	while (FindToken(keyframe_stops, "{", true))
+	{
+		// Check for end of keyframe list
+		const String nextPropName = StringUtilities::StripWhitespace( keyframe_stops );
+		if( nextPropName[0] == '}' )
+		{
+			int find = keyframe_stops.Find("}");
+
+			// Skip to end of keyframe list
+			parse_buffer_pos -= (keyframe_stops.Length() - find);
+			break;
+		}
+
+		// Read the attributes
+		PropertyDictionary properties;
+
+		// TODO: Valid which properties can be animated
+
+		if (!ReadProperties(properties))
+		{
+			Log::Message(Log::LT_WARNING, "Failed to read properties for %s", nextPropName.CString());
+			continue;
+		}
+
+		frames[ nextPropName ] = properties;
+	}
+
+	// Get list of animation names
+	StringList keyframe_name_list;
+	StringUtilities::ExpandString(keyframe_name_list, atRules.Substring(11));
+
+	// Add keyframe properties to all animation names
+	for (size_t i = 0; i < keyframe_name_list.size(); i++)
+	{
+		Log::Message(Log::LT_INFO, "Creating animation with %u frames for %s", frames.size(), keyframe_name_list[i]);
+
+		sheet->AddAnimation( keyframe_name_list[i], frames );
+		//sheet->
+	}
+	
+	return true;
+}
+
+int StyleSheetParser::Parse(StyleSheet* sheet, StyleSheetNode* node, Stream* _stream)
 {
 	int rule_count = 0;
 	line_number = 0;
@@ -63,21 +129,29 @@ int StyleSheetParser::Parse(StyleSheetNode* node, Stream* _stream)
 		
 		while (FindToken(style_names, "{", true))
 		{
-			// Read the attributes
 			PropertyDictionary properties;
-			if (!ReadProperties(properties))
+
+			if( ReadAtRule( sheet, style_names ) )
 			{
-				continue;
+				rule_count++;
 			}
+			else
+			{
+				// Read the attributes
+				if (!ReadProperties(properties))
+				{
+					continue;
+				}
 
-			StringList style_name_list;
-			StringUtilities::ExpandString(style_name_list, style_names);
+				StringList style_name_list;
+				StringUtilities::ExpandString(style_name_list, style_names);
 
-			// Add style nodes to the root of the tree
-			for (size_t i = 0; i < style_name_list.size(); i++)
-				ImportProperties(node, style_name_list[i], properties, rule_count);
+				// Add style nodes to the root of the tree
+				for (size_t i = 0; i < style_name_list.size(); i++)
+					ImportProperties(node, style_name_list[i], properties, rule_count);
 
-			rule_count++;
+				rule_count++;
+			}
 		}
 	}	
 

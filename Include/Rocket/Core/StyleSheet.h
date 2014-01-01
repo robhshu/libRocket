@@ -68,6 +68,10 @@ public:
 	/// caller, so another should not be added. The definition should be released by removing the reference count.
 	ElementDefinition* GetElementDefinition(const Element* element) const;
 
+	void ClearAnimationIndex( );
+	void AddAnimation(const String &name, const KeyframeProperties &frames);
+	const KeyframeProperties *GetAnimation(const String &name);
+
 protected:
 	/// Destroys the style sheet.
 	virtual void OnReferenceDeactivate();
@@ -93,6 +97,8 @@ private:
 	mutable ElementDefinitionCache address_cache;
 	// Index of node sets to element definitions.
 	mutable ElementDefinitionCache node_cache;
+	// List of frames at-rule
+	mutable AnimationList anim_cache;
 };
 
 }

@@ -135,6 +135,8 @@ const Vector2i& Context::GetDimensions() const
 // Updates all elements in the element tree.
 bool Context::Update()
 {
+	// TODO: Update animation. This should apply pseudo properties over elements in Update() ?
+
 	root->Update();
 
 	// Release any documents that were unloaded during the update.

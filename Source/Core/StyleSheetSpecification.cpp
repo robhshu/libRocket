@@ -266,6 +266,18 @@ void StyleSheetSpecification::RegisterDefaultProperties()
 	RegisterProperty(FOCUS, "auto", true, false).AddParser("keyword", "none, auto");
 
 	RegisterProperty(SCROLLBAR_MARGIN, "0", false, false).AddParser("number");
+
+	// See default values https://developer.mozilla.org/en-US/docs/Web/CSS/animation
+
+	RegisterProperty(ANIMATION_NAME, "none", false, false)
+		.AddParser("keyword", "none")
+		.AddParser("string");
+	RegisterProperty(ANIMATION_DURATION, "0s", false, false)
+		.AddParser("number");
+	RegisterProperty(ANIMATION_ITERATION_COUNT, "1", false, false)
+		.AddParser("number")
+		.AddParser("keyword", "infinite");
+	RegisterShorthand(ANIMATION, "animation-name, animation-duration, animation-iteration-count");
 }
 
 }
