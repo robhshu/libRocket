@@ -34,6 +34,7 @@
 #include <Rocket/Core/StreamMemory.h>
 #include <Rocket/Core/StyleSheet.h>
 #include <Rocket/Core/StyleSheetSpecification.h>
+#include "PropertyParserNumber.h"
 
 namespace Rocket {
 namespace Core {
@@ -71,6 +72,8 @@ bool StyleSheetParser::ReadAtRule(StyleSheet* sheet, const String &rules)
 	// If reading the token crosses the parse buffer the position will be invalid (< 0)
 
 	KeyframeProperties frames;
+	PropertyParserNumber num_prop;
+	ParameterMap ignored;
 
 	while (FindToken(keyframe_stops, "{", true))
 	{
@@ -92,11 +95,25 @@ bool StyleSheetParser::ReadAtRule(StyleSheet* sheet, const String &rules)
 
 		if (!ReadProperties(properties))
 		{
-			Log::Message(Log::LT_WARNING, "Failed to read properties for %s", nextPropName.CString());
 			continue;
 		}
 
-		frames[ nextPropName ] = properties;
+		// Convert keyframe to frame number
+		Property frame_num;
+		if(num_prop.ParseValue(frame_num, nextPropName, ignored))
+		{
+			float fVal = frame_num.Get<float >();
+
+			if( frame_num.unit == Property::PERCENT )
+				fVal *= 0.01f;
+
+			if( Math::Clamp(fVal, 0.0f, 1.0f) == fVal )
+				frames[ fVal ] = properties;
+			else
+			{
+				Log::Message(Log::LT_WARNING, "Unsupport frame number '%s'", nextPropName.CString());
+			}
+		}
 	}
 
 	// Get list of animation names

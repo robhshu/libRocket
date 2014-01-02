@@ -99,7 +99,7 @@ class PropertyDictionary;
 
 // Keyframe list
 // NOTE: PropertyDictionary is a 'CSSRuleList'
-typedef std::map<String, PropertyDictionary> KeyframeProperties;
+typedef std::map<float, PropertyDictionary> KeyframeProperties;
 typedef std::map<String, KeyframeProperties > AnimationList;
 
 }

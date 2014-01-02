@@ -522,7 +522,7 @@ public:
 	/// Returns whether or not this element has any DOM children.
 	/// @return True if the element has at least one DOM child, false otherwise.
 	bool HasChildNodes() const;
-
+	
 	/// Get a child element by its ID.
 	/// @param[in] id Id of the the child element
 	/// @return The child of this element with the given ID, or NULL if no such child exists.
@@ -577,6 +577,8 @@ public:
 	
 	/// Update the element's layout if required.
 	void UpdateLayout();
+
+	void UpdateAnimation();
 
 protected:
 	/// Forces the element to generate a local stacking context, regardless of the value of its z-index
@@ -677,6 +679,9 @@ private:
 
 	mutable Vector2f absolute_offset;
 	mutable bool offset_dirty;
+
+	//// List of available property keyframes
+	//AnimationList anims;
 
 	// The offset this element adds to its logical children due to scrolling content.
 	Vector2f scroll_offset;

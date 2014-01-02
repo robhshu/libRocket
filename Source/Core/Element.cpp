@@ -153,20 +153,62 @@ void Element::Update()
 {
 	ReleaseElements(deleted_children);
 	active_children = children;
+
+	UpdateAnimation();
+
 	for (size_t i = 0; i < active_children.size(); i++)
 		active_children[i]->Update();
 
-	// Check for animations
+	// Force a definition reload, if necessary.
+	style->GetDefinition();
 
+	scroll->Update();
+	OnUpdate();
+}
+
+void Element::UpdateAnimation()
+{
 	const Property *animProp = GetProperty(ANIMATION_NAME);
-	if( animProp && animProp->unit == Property::STRING)
-	{
-		const KeyframeProperties *props = GetStyleSheet()->GetAnimation( animProp->Get<String >() );
-		if( props )
-		{
-			// TODO: Resolve animation
 
-			const PropertyMap &pmap = props->begin()->second.GetProperties();
+	if( !animProp )
+		return;
+	
+	if( animProp->unit != Property::STRING)
+		return;
+
+	const KeyframeProperties *props = GetStyleSheet()->GetAnimation( animProp->Get<String >() );
+	if( props )
+	{
+		// NOTE: We can use GetProperty(ANIMATION_DURATION) to get the true timings too
+
+		// TODO: Resolve animation
+
+		const float tNow = GetSystemInterface()->GetElapsedTime()/10.0f;
+
+		KeyframeProperties::const_iterator to = props->upper_bound(tNow);
+
+		if( to == props->end() )
+		{
+			// No keyframe (warn?)
+		}
+		else if( to == props->begin() )
+		{
+			// no need to lerp, first value
+			const PropertyMap &pmap = to->second.GetProperties();
+			
+			for( PropertyMap::const_iterator i=pmap.begin(); i!=pmap.end(); i++ )
+			{
+				style->SetProperty( i->first, i->second );
+			}
+		}
+		else
+		{
+			// lerp between values
+			KeyframeProperties::const_iterator from = to;
+			--from;
+
+			// TODO: Lerp between values
+			const PropertyMap &pmap = from->second.GetProperties();
 			
 			for( PropertyMap::const_iterator i=pmap.begin(); i!=pmap.end(); i++ )
 			{
@@ -174,12 +216,6 @@ void Element::Update()
 			}
 		}
 	}
-
-	// Force a definition reload, if necessary.
-	style->GetDefinition();
-
-	scroll->Update();
-	OnUpdate();
 }
 
 void Element::Render()
