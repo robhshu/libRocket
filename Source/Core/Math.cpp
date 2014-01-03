@@ -60,6 +60,12 @@ ROCKETCORE_API float AbsoluteValue(float value)
 	return fabsf(value);
 }
 
+// Calculates the remainder of numer/denom
+ROCKETCORE_API float Mod(float numer, float denom)
+{
+	return fmod(numer, denom);
+}
+
 // Calculates the cosine of an angle.
 ROCKETCORE_API float Cos(float angle)
 {

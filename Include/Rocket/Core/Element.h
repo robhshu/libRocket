@@ -578,7 +578,8 @@ public:
 	/// Update the element's layout if required.
 	void UpdateLayout();
 
-	void UpdateAnimation();
+	/// Update the element animation
+	void UpdateAnimation(float anim_delta_time);
 
 protected:
 	/// Forces the element to generate a local stacking context, regardless of the value of its z-index
@@ -680,8 +681,9 @@ private:
 	mutable Vector2f absolute_offset;
 	mutable bool offset_dirty;
 
-	//// List of available property keyframes
-	//AnimationList anims;
+	float GetElementAnimationDuration( );
+	const KeyframeProperties *GetElementAnimation( );
+	bool LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float anim_time );
 
 	// The offset this element adds to its logical children due to scrolling content.
 	Vector2f scroll_offset;

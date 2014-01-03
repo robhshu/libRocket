@@ -133,14 +133,26 @@ const Vector2i& Context::GetDimensions() const
 }
 
 // Updates all elements in the element tree.
-bool Context::Update()
+bool Context::Update( )
 {
 	// TODO: Update animation. This should apply pseudo properties over elements in Update() ?
-
+	
 	root->Update();
 
 	// Release any documents that were unloaded during the update.
 	ReleaseUnloadedDocuments();
+
+	return true;
+}
+
+bool Context::UpdateWithAnimation(float anim_time)
+{
+	Update( );
+
+	for( ElementList::iterator i = anim_handles.begin(); i != anim_handles.end(); i++ )
+	{
+		(*i)->UpdateAnimation(anim_time);
+	}
 
 	return true;
 }
@@ -250,7 +262,12 @@ ElementDocument* Context::LoadDocument(Stream* stream)
 
 	// Bind the events, run the layout and fire the 'onload' event.
 	ElementUtilities::BindEventAttributes(document);
+
 	document->UpdateLayout();
+
+	// Setup animation cache
+	anim_handles.clear();
+	CacheElementAnimations(document);
 
 	// Dispatch the load notifications.
 	PluginRegistry::NotifyDocumentLoad(document);
@@ -1207,6 +1224,24 @@ void Context::ReleaseUnloadedDocuments()
 		for (size_t i = 0; i < documents.size(); ++i)
 			documents[i]->GetEventDispatcher()->DetachAllEvents();
 		documents.clear();
+	}
+}
+
+// Store off all element handles
+void Context::CacheElementAnimations( Element *node )
+{
+	// Check element handle is not already in our cache
+	if( std::find(anim_handles.begin(), anim_handles.end(), root) == anim_handles.end() )
+	{
+		if( node->GetElementAnimation() )
+		{
+			anim_handles.push_back( node );
+		}
+
+		for( int i=0; i<node->GetNumChildren(); i++ )
+		{
+			CacheElementAnimations( node->GetChild(i) );
+		}
 	}
 }
 

@@ -153,9 +153,7 @@ void Element::Update()
 {
 	ReleaseElements(deleted_children);
 	active_children = children;
-
-	UpdateAnimation();
-
+	
 	for (size_t i = 0; i < active_children.size(); i++)
 		active_children[i]->Update();
 
@@ -166,56 +164,64 @@ void Element::Update()
 	OnUpdate();
 }
 
-void Element::UpdateAnimation()
+void Element::UpdateAnimation(float anim_delta_time)
+{
+	const KeyframeProperties *kf = GetElementAnimation( );
+
+	if( kf == NULL || kf->size() < 2 )
+	{
+		Log::Message(Log::LT_ERROR, "Element %s has no animation", GetAddress().CString());
+		return;
+	}
+	
+	const float fDuration = GetElementAnimationDuration();
+
+	const float anim_time = Math::Mod(anim_delta_time, fDuration) / fDuration;
+
+	KeyframeProperties::const_iterator it_a = kf->lower_bound( anim_time );
+	KeyframeProperties::const_iterator it_b = it_a;
+	it_b--;
+	
+	LerpAnimationProperties( it_a->second, it_b->second, anim_time );
+}
+
+bool Element::LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float anim_time )
+{
+	if( a.GetNumProperties() != b.GetNumProperties() )
+		return false; // for now
+
+	// TODO: Update list of animation properties
+
+	const PropertyMap &props_a = a.GetProperties();
+
+	for(PropertyMap::const_iterator i=props_a.begin(); i!=props_a.end(); i++)
+	{
+		SetProperty(i->first, i->second);
+	}
+
+	return true;
+}
+
+// Resolve animation from animation-name property
+const KeyframeProperties *Element::GetElementAnimation( )
 {
 	const Property *animProp = GetProperty(ANIMATION_NAME);
 
-	if( !animProp )
-		return;
-	
-	if( animProp->unit != Property::STRING)
-		return;
-
-	const KeyframeProperties *props = GetStyleSheet()->GetAnimation( animProp->Get<String >() );
-	if( props )
+	// The default value is 'none' which is a keyword, which are stored as int
+	if( animProp && animProp->unit == Property::STRING )
 	{
-		// NOTE: We can use GetProperty(ANIMATION_DURATION) to get the true timings too
+		const String &expectedAnim = animProp->Get<String >();
 
-		// TODO: Resolve animation
-
-		const float tNow = GetSystemInterface()->GetElapsedTime()/10.0f;
-
-		KeyframeProperties::const_iterator to = props->upper_bound(tNow);
-
-		if( to == props->end() )
-		{
-			// No keyframe (warn?)
-		}
-		else if( to == props->begin() )
-		{
-			// no need to lerp, first value
-			const PropertyMap &pmap = to->second.GetProperties();
-			
-			for( PropertyMap::const_iterator i=pmap.begin(); i!=pmap.end(); i++ )
-			{
-				style->SetProperty( i->first, i->second );
-			}
-		}
-		else
-		{
-			// lerp between values
-			KeyframeProperties::const_iterator from = to;
-			--from;
-
-			// TODO: Lerp between values
-			const PropertyMap &pmap = from->second.GetProperties();
-			
-			for( PropertyMap::const_iterator i=pmap.begin(); i!=pmap.end(); i++ )
-			{
-				style->SetProperty( i->first, i->second );
-			}
-		}
+		return GetStyleSheet()->GetAnimation( expectedAnim );
 	}
+
+	return NULL;
+}
+
+float Element::GetElementAnimationDuration( )
+{
+	const Property *animProp = GetProperty(ANIMATION_DURATION);
+	return animProp->Get<float >( );
 }
 
 void Element::Render()

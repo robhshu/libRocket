@@ -96,6 +96,9 @@ ROCKETCORE_API bool AreEqual(float value_0, float value_1);
 /// @return The absolute value of the number.
 ROCKETCORE_API float AbsoluteValue(float value);
 
+/// Calculates the remainder of numer/denom
+ROCKETCORE_API float Mod(float numer, float denom);
+
 /// Calculates the cosine of an angle.
 /// @param[in] angle The angle to calculate the cosine of, in radians.
 /// @return The cosine of the angle.

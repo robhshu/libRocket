@@ -82,6 +82,9 @@ public:
 
 	/// Updates all elements in the context's documents.
 	bool Update();
+
+	bool UpdateWithAnimation(float anim_time);
+
 	/// Renders all visible elements in the context's documents.
 	bool Render();
 
@@ -224,7 +227,7 @@ public:
 	/// Sets the instancer to use for releasing this object.
 	/// @param[in] instancer The context's instancer.
 	void SetInstancer(ContextInstancer* instancer);
-
+	
 protected:
 	virtual void OnReferenceDeactivate();
 
@@ -327,6 +330,12 @@ private:
 
 	// Releases all unloaded documents pending destruction.
 	void ReleaseUnloadedDocuments();
+
+
+	ElementList anim_handles;
+
+	void CacheElementAnimations( Element *root );
+
 
 	// Sends the specified event to all elements in new_items that don't appear in old_items.
 	static void SendEvents(const ElementSet& old_items, const ElementSet& new_items, const String& event, const Dictionary& parameters, bool interruptible);
