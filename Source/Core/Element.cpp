@@ -172,14 +172,14 @@ bool Element::UpdateAnimation(float delta_time)
 
 	if( kf == NULL || kf->size() < 2 )
 	{
-		Log::Message(Log::LT_ERROR, "Element %s has no animation", GetAddress().CString());
+		Log::Message(Log::LT_WARNING, "Element %s has no animation", GetAddress().CString());
 		return false;
 	}
 	
 	int loops = 0;
 	if( !GetElementAnimationIterationCount( loops ) )
 	{
-		// Invalid iteration count
+		Log::Message(Log::LT_WARNING, "Element %s uses an unsupported iteration number", GetAddress().CString());
 		return false;
 	}
 	
@@ -187,7 +187,7 @@ bool Element::UpdateAnimation(float delta_time)
 	
 	if( fDuration == 0.0f )
 	{
-		Log::Message(Log::LT_ERROR, "Animation duration is 0s");
+		Log::Message(Log::LT_WARNING, "Element %s has an animation of 0s", GetAddress().CString());
 		return false;
 	}
 
@@ -196,7 +196,15 @@ bool Element::UpdateAnimation(float delta_time)
 	const float fLoopDuration = loops * fDuration;
 	if( anim_elapsed > fLoopDuration || Math::AreEqual( anim_elapsed, fLoopDuration ) )
 	{
-		// Animation has finished
+		// Set properties from last keyframe
+		const PropertyMap &l_props = (--kf->end())->second.GetProperties();
+
+		for( PropertyMap::const_iterator i = l_props.begin(); i != l_props.end(); i++ )
+		{
+			SetProperty( i->first, i->second );
+		}
+
+		Log::Message(Log::LT_DEBUG, "Element %s animation has finished", GetAddress().CString());
 		return false;
 	}
 	
@@ -218,8 +226,12 @@ bool Element::UpdateAnimation(float delta_time)
 
 bool Element::LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float weight )
 {
+	// Caveat for the moment
 	if( a.GetNumProperties() != b.GetNumProperties() )
-		return false; // for now
+	{
+		Log::Message(Log::LT_WARNING, "The same properties must be set for ALL keyframes");
+		return false;
+	}
 	
 	const PropertyMap &props_a = a.GetProperties();
 	const PropertyMap &props_b = b.GetProperties();
@@ -230,7 +242,11 @@ bool Element::LerpAnimationProperties( const PropertyDictionary &a, const Proper
 	for( ; it_a != props_a.end() && it_b != props_b.end(); it_a++, it_b++ )
 	{
 		// Caveat for the moment
-		ROCKET_ASSERTMSG(it_a->first == it_b->first, "Properties must exist in ALL keyframes");
+		if( it_a->first != it_b->first )
+		{
+			Log::Message(Log::LT_WARNING, "The same properties must be set for ALL keyframes");
+			return false;
+		}
 
 		const Property::Unit u = it_a->second.unit;
 

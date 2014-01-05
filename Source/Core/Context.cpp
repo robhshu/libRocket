@@ -149,9 +149,18 @@ bool Context::UpdateWithAnimation(float delta_time)
 {
 	Update( );
 
-	for( ElementList::iterator i = anim_handles.begin(); i != anim_handles.end(); i++ )
+	ElementList::iterator i = anim_handles.begin();
+	while( i != anim_handles.end() )
 	{
-		(*i)->UpdateAnimation(delta_time);
+		// Returns false when finished
+		if( !(*i)->UpdateAnimation(delta_time) )
+		{
+			i = anim_handles.erase(i);
+		}
+		else
+		{
+			i++;
+		}
 	}
 
 	return true;
