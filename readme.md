@@ -22,6 +22,7 @@ This branch of libRocket aims to experiment with CSS3 animation!
 
 ### Remaining
 
+- Notify debugger which elements are updated by animation
 - Interpolate between all supported units (colours and most numerical units are supported now)
 - Animate to/from last/default property value
 - The `transition` property
