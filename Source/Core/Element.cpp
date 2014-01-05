@@ -177,15 +177,12 @@ bool Element::UpdateAnimation(float delta_time)
 	}
 	
 	int loops = 0;
-
 	if( !GetElementAnimationIterationCount( loops ) )
 	{
 		// Invalid iteration count
 		return false;
 	}
-
-	anim_elapsed += delta_time;
-
+	
 	const float fDuration = GetElementAnimationDuration();
 	
 	if( fDuration == 0.0f )
@@ -194,18 +191,32 @@ bool Element::UpdateAnimation(float delta_time)
 		return false;
 	}
 
-	const float anim_time = Math::Mod(anim_elapsed, fDuration) / fDuration;
+	anim_elapsed += delta_time;
 
-	KeyframeProperties::const_iterator it_b = kf->upper_bound( anim_time );
+	const float fLoopDuration = loops * fDuration;
+	if( anim_elapsed > fLoopDuration || Math::AreEqual( anim_elapsed, fLoopDuration ) )
+	{
+		// Animation has finished
+		return false;
+	}
+	
+	const float anim_completion = Math::Mod(anim_elapsed, fDuration) / fDuration;
+
+	KeyframeProperties::const_iterator it_b = kf->upper_bound( anim_completion  );
 	KeyframeProperties::const_iterator it_a = it_b;
 
+	float weight = 0.0f;
+
 	if( it_a != kf->begin() )
+	{
 		it_a--;
-	
-	return LerpAnimationProperties( it_a->second, it_b->second, anim_time );
+		weight = ( anim_completion - it_a->first ) / ( it_b->first - it_a->first );
+	}
+
+	return LerpAnimationProperties( it_a->second, it_b->second, weight );
 }
 
-bool Element::LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float anim_time )
+bool Element::LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float weight )
 {
 	if( a.GetNumProperties() != b.GetNumProperties() )
 		return false; // for now
@@ -225,13 +236,13 @@ bool Element::LerpAnimationProperties( const PropertyDictionary &a, const Proper
 
 		if( u == Property::RELATIVE_UNIT || u == Property::PPI_UNIT || u == Property::PX )
 		{
-			const Property merged_prop = Property::Interpolate<float >(it_a->second, it_b->second, anim_time);
+			const Property merged_prop = Property::Interpolate<float >(it_a->second, it_b->second, weight);
 
 			SetProperty(it_a->first, merged_prop);
 		}
 		else if( u == Property::COLOUR )
 		{
-			const Property merged_prop = Property::Interpolate<Colourb >(it_a->second, it_b->second, anim_time);
+			const Property merged_prop = Property::Interpolate<Colourb >(it_a->second, it_b->second, weight);
 
 			SetProperty(it_a->first, merged_prop);
 		}
