@@ -276,7 +276,7 @@ void StyleSheetSpecification::RegisterDefaultProperties()
 		.AddParser("number");
 	RegisterProperty(ANIMATION_ITERATION_COUNT, "1", false, false)
 		.AddParser("number")
-		.AddParser("keyword", "infinite");
+		.AddParser("keyword", INFINITE);
 	RegisterShorthand(ANIMATION, "animation-name, animation-duration, animation-iteration-count");
 }
 

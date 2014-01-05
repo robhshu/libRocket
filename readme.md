@@ -9,9 +9,23 @@ libRocket uses the time-tested open standards XHTML1.0 and CSS2.0 (while borrowi
 HTML5 and CSS3), and extends them with features suited towards real-time applications. Because of 
 this, you don't have to learn a whole new proprietary technology like other libraries in this space.
 
-## Planned Developments
+## Branch Developments
 
-This branch of libRocket aims to look at swapping out the XML parser and experiment with animation!
+This branch of libRocket aims to experiment with CSS3 animation!
+
+Currently:
+
+- Parses and loads `@keyframes` at-rules
+- Caches tags which reference an animation sequence using `animation-name` (or the shorthand, `animation`)
+- Animates by properties interpolation
+
+Remaining:
+
+- Interpolate between all supported units (colours and most numerical units are supported now)
+- Animate to/from last/default property value
+- The `transition` property
+- Easing functions
+- Create animation sample
 
 ## Features
 

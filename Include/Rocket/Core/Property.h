@@ -112,7 +112,17 @@ public:
 
 	String source;
 	int source_line_number;
+
+	// Interpolate between values of the same type
+	template< typename T >
+	static Property Interpolate( const Property &a, const Property &b, const float w );
+
+	// Colourb specialization, converting from byte to float so can can interpolate
+	template <>
+	static Property Interpolate<Colourb >( const Property &a, const Property &b, const float w );
 };
+
+#include <Rocket/Core/Property.inl>
 
 }
 }

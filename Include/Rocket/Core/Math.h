@@ -77,7 +77,7 @@ Type Clamp(Type value, Type min, Type max)
 template< typename Type >
 Type Lerp(Type a, Type b, float weight)
 {
-	return a + w * (b - a);
+	return a + weight * (b - a);
 }
 
 /// Evaluates if a number is, or close to, zero.

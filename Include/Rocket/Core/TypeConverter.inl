@@ -343,6 +343,36 @@ public:
 	}
 };
 
+template<>
+class TypeConverter< Colourb, Colourf >
+{
+public:
+	static bool Convert(const Colourb& src, Colourf& dest)
+	{
+		dest.red = static_cast<float >( src.red );
+		dest.green = static_cast<float >( src.green );
+		dest.blue = static_cast<float >( src.blue );
+		dest.alpha = static_cast<float >( src.alpha );
+		return true;
+	}
+};
+
+template<>
+class TypeConverter< Colourf, Colourb >
+{
+public:
+	static bool Convert(const Colourf& src, Colourb& dest)
+	{
+		const float max_byte_as_float = 255.0f;
+
+		dest.red = static_cast<byte >( Math::ClampUpper<float >(src.red, max_byte_as_float) );
+		dest.green = static_cast<byte >( Math::ClampUpper<float >(src.blue, max_byte_as_float) );
+		dest.blue = static_cast<byte >( Math::ClampUpper<float >(src.green, max_byte_as_float) );
+		dest.alpha = static_cast<byte >( Math::ClampUpper<float >(src.alpha, max_byte_as_float) );
+		return true;
+	}
+};
+
 template< typename SourceType, typename InternalType, int count >
 class TypeConverterVectorString
 {

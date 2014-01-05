@@ -94,10 +94,11 @@ const String DRAG = "drag";
 const String TAB_INDEX = "tab-index";
 const String SCROLLBAR_MARGIN = "scrollbar-margin";
 
+const String INFINITE = "infinite";
 const String ANIMATION_NAME = "animation-name";
 const String ANIMATION_DURATION = "animation-duration";
 const String ANIMATION_ITERATION_COUNT = "animation-iteration-count";
-const String ANIMATION = "animation"; // unused shorthand
+const String ANIMATION = "animation";
 
 const String MOUSEDOWN = "mousedown";
 const String MOUSESCROLL = "mousescroll";

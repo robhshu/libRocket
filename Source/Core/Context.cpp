@@ -145,13 +145,13 @@ bool Context::Update( )
 	return true;
 }
 
-bool Context::UpdateWithAnimation(float anim_time)
+bool Context::UpdateWithAnimation(float delta_time)
 {
 	Update( );
 
 	for( ElementList::iterator i = anim_handles.begin(); i != anim_handles.end(); i++ )
 	{
-		(*i)->UpdateAnimation(anim_time);
+		(*i)->UpdateAnimation(delta_time);
 	}
 
 	return true;

@@ -83,7 +83,7 @@ public:
 	/// Updates all elements in the context's documents.
 	bool Update();
 
-	bool UpdateWithAnimation(float anim_time);
+	bool UpdateWithAnimation(float delta_time);
 
 	/// Renders all visible elements in the context's documents.
 	bool Render();

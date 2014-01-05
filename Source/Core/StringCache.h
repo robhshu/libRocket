@@ -97,6 +97,7 @@ extern const String DRAG;
 extern const String TAB_INDEX;
 extern const String SCROLLBAR_MARGIN;
 
+extern const String INFINITE;
 extern const String ANIMATION_NAME;
 extern const String ANIMATION_DURATION;
 extern const String ANIMATION_ITERATION_COUNT;

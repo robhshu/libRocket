@@ -113,6 +113,8 @@ const int TAB_INDEX_AUTO = 1;
 const int FOCUS_NONE = 0;
 const int FOCUS_AUTO = 1;
 
+const int LOOP_INFINITE = 0;
+
 }
 }
 

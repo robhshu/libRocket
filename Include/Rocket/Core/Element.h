@@ -579,7 +579,7 @@ public:
 	void UpdateLayout();
 
 	/// Update the element animation
-	void UpdateAnimation(float anim_delta_time);
+	bool UpdateAnimation(float anim_delta_time);
 
 protected:
 	/// Forces the element to generate a local stacking context, regardless of the value of its z-index
@@ -682,6 +682,7 @@ private:
 	mutable bool offset_dirty;
 
 	float GetElementAnimationDuration( );
+	bool GetElementAnimationIterationCount( int &refCount );
 	const KeyframeProperties *GetElementAnimation( );
 	bool LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float anim_time );
 
@@ -721,6 +722,9 @@ private:
 	int clipping_ignore_depth;
 	bool clipping_enabled;
 	bool clipping_state_dirty;
+
+	// Internal animation time
+	float anim_elapsed;
 
 	friend class Context;
 	friend class ElementStyle;

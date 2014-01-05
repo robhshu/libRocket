@@ -109,6 +109,8 @@ Element::Element(const String& _tag) : absolute_offset(0, 0), relative_offset_ba
 	border = new ElementBorder(this);
 	decoration = new ElementDecoration(this);
 	scroll = new ElementScroll(this);
+
+	anim_elapsed = 0.0f;
 }
 
 Element::~Element()
@@ -164,39 +166,75 @@ void Element::Update()
 	OnUpdate();
 }
 
-void Element::UpdateAnimation(float anim_delta_time)
+bool Element::UpdateAnimation(float delta_time)
 {
 	const KeyframeProperties *kf = GetElementAnimation( );
 
 	if( kf == NULL || kf->size() < 2 )
 	{
 		Log::Message(Log::LT_ERROR, "Element %s has no animation", GetAddress().CString());
-		return;
+		return false;
 	}
 	
+	int loops = 0;
+
+	if( !GetElementAnimationIterationCount( loops ) )
+	{
+		// Invalid iteration count
+		return false;
+	}
+
+	anim_elapsed += delta_time;
+
 	const float fDuration = GetElementAnimationDuration();
-
-	const float anim_time = Math::Mod(anim_delta_time, fDuration) / fDuration;
-
-	KeyframeProperties::const_iterator it_a = kf->lower_bound( anim_time );
-	KeyframeProperties::const_iterator it_b = it_a;
-	it_b--;
 	
-	LerpAnimationProperties( it_a->second, it_b->second, anim_time );
+	if( fDuration == 0.0f )
+	{
+		Log::Message(Log::LT_ERROR, "Animation duration is 0s");
+		return false;
+	}
+
+	const float anim_time = Math::Mod(anim_elapsed, fDuration) / fDuration;
+
+	KeyframeProperties::const_iterator it_b = kf->upper_bound( anim_time );
+	KeyframeProperties::const_iterator it_a = it_b;
+
+	if( it_a != kf->begin() )
+		it_a--;
+	
+	return LerpAnimationProperties( it_a->second, it_b->second, anim_time );
 }
 
 bool Element::LerpAnimationProperties( const PropertyDictionary &a, const PropertyDictionary &b, float anim_time )
 {
 	if( a.GetNumProperties() != b.GetNumProperties() )
 		return false; // for now
-
-	// TODO: Update list of animation properties
-
+	
 	const PropertyMap &props_a = a.GetProperties();
+	const PropertyMap &props_b = b.GetProperties();
 
-	for(PropertyMap::const_iterator i=props_a.begin(); i!=props_a.end(); i++)
+	PropertyMap::const_iterator it_a = props_a.begin();
+	PropertyMap::const_iterator it_b = props_b.begin();
+
+	for( ; it_a != props_a.end() && it_b != props_b.end(); it_a++, it_b++ )
 	{
-		SetProperty(i->first, i->second);
+		// Caveat for the moment
+		ROCKET_ASSERTMSG(it_a->first == it_b->first, "Properties must exist in ALL keyframes");
+
+		const Property::Unit u = it_a->second.unit;
+
+		if( u == Property::RELATIVE_UNIT || u == Property::PPI_UNIT || u == Property::PX )
+		{
+			const Property merged_prop = Property::Interpolate<float >(it_a->second, it_b->second, anim_time);
+
+			SetProperty(it_a->first, merged_prop);
+		}
+		else if( u == Property::COLOUR )
+		{
+			const Property merged_prop = Property::Interpolate<Colourb >(it_a->second, it_b->second, anim_time);
+
+			SetProperty(it_a->first, merged_prop);
+		}
 	}
 
 	return true;
@@ -222,6 +260,30 @@ float Element::GetElementAnimationDuration( )
 {
 	const Property *animProp = GetProperty(ANIMATION_DURATION);
 	return animProp->Get<float >( );
+}
+
+bool Element::GetElementAnimationIterationCount( int &refCount )
+{
+	const Property *animProp = GetProperty(ANIMATION_ITERATION_COUNT);
+	const int loop_count = animProp->Get<int >( );
+
+	// If 'infinite' then loop_number is a keyword index
+	if (animProp->unit == Property::KEYWORD &&
+		loop_count == LOOP_INFINITE )
+	{
+		refCount = 99999999;
+		return true;
+	}
+	
+	if( loop_count > 0 )
+	{
+		refCount = loop_count;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Element::Render()
