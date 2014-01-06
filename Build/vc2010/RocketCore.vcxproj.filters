@@ -531,6 +531,10 @@
     <ClCompile Include="..\..\Source\Core\StringCache.cpp">
       <Filter>String Cache</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\ElementStyleCache.cpp" />
+    <ClCompile Include="..\..\Source\Core\PropertyParserLinearGradient.cpp">
+      <Filter>Style Sheet\Property\Definition\Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Core\precompiled.h">
@@ -969,6 +973,13 @@
       <Filter>String Cache</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Rocket\Core.h" />
+    <ClInclude Include="..\..\Source\Core\ElementStyleCache.h" />
+    <ClInclude Include="..\..\Source\Core\PropertyParserLinearGradient.h">
+      <Filter>Style Sheet\Property\Definition\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Rocket\Core\LinearGradient.h">
+      <Filter>Core\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\Rocket\Core\Element.inl">

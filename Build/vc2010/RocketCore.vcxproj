@@ -78,6 +78,7 @@
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\PropertyParserLinearGradient.cpp" />
     <ClCompile Include="..\..\Source\Core\Texture.cpp" />
     <ClCompile Include="..\..\Source\Core\TextureDatabase.cpp" />
     <ClCompile Include="..\..\Source\Core\TextureResource.cpp" />
@@ -90,7 +91,7 @@
     <ClCompile Include="..\..\Source\Core\ElementReference.cpp" />
     <ClCompile Include="..\..\Source\Core\ElementScroll.cpp" />
     <ClCompile Include="..\..\Source\Core\ElementStyle.cpp" />
-	<ClCompile Include="..\..\Source\Core\ElementStyleCache.cpp" />
+    <ClCompile Include="..\..\Source\Core\ElementStyleCache.cpp" />
     <ClCompile Include="..\..\Source\Core\ElementUtilities.cpp" />
     <ClCompile Include="..\..\Source\Core\LayoutBlockBox.cpp" />
     <ClCompile Include="..\..\Source\Core\LayoutBlockBoxSpace.cpp" />
@@ -213,7 +214,9 @@
     <ClCompile Include="..\..\Source\Core\StringCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Include\Rocket\Core\LinearGradient.h" />
     <ClInclude Include="..\..\Source\Core\precompiled.h" />
+    <ClInclude Include="..\..\Include\Rocket\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\Texture.h" />
     <ClInclude Include="..\..\Source\Core\TextureDatabase.h" />
     <ClInclude Include="..\..\Source\Core\TextureResource.h" />
@@ -226,7 +229,7 @@
     <ClInclude Include="..\..\Include\Rocket\Core\ElementReference.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\ElementScroll.h" />
     <ClInclude Include="..\..\Source\Core\ElementStyle.h" />
-	<ClInclude Include="..\..\Source\Core\ElementStyleCache.h" />
+    <ClInclude Include="..\..\Source\Core\ElementStyleCache.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\ElementUtilities.h" />
     <ClInclude Include="..\..\Source\Core\LayoutBlockBox.h" />
     <ClInclude Include="..\..\Source\Core\LayoutBlockBoxSpace.h" />
