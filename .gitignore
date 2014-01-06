@@ -9,3 +9,8 @@
 bin/*
 
 /lib/
+
+# VS other
+debug
+_UpgradeReport_Files
+
