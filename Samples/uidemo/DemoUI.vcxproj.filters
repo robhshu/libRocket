@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Event.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventHandler.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventInstancer.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventManager.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Event">
+      <UniqueIdentifier>{982b853e-7ecb-40f5-bebb-5a4200922960}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Event.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EventHandler.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EventInstancer.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EventManager.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
