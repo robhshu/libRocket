@@ -252,13 +252,13 @@ bool Element::LerpAnimationProperties( const PropertyDictionary &a, const Proper
 
 		if( u == Property::RELATIVE_UNIT || u == Property::PPI_UNIT || u == Property::PX )
 		{
-			const Property merged_prop = Property::Interpolate<float >(it_a->second, it_b->second, weight);
+			const Property merged_prop = Property::InterpolateNumber(it_a->second, it_b->second, weight);
 
 			SetProperty(it_a->first, merged_prop);
 		}
 		else if( u == Property::COLOUR )
 		{
-			const Property merged_prop = Property::Interpolate<Colourb >(it_a->second, it_b->second, weight);
+			const Property merged_prop = Property::InterpolateColour(it_a->second, it_b->second, weight);
 
 			SetProperty(it_a->first, merged_prop);
 		}

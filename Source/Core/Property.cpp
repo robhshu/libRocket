@@ -52,5 +52,40 @@ String Property::ToString() const
 	return string;
 }
 
+Property Property::InterpolateNumber( const Property &a, const Property &b, const float w )
+{
+	const float val_a = a.value.Get<float >( );
+	const float val_b = b.value.Get<float >( );
+	const float lerp_val = Math::Lerp(val_a, val_b, w);
+
+	Property result(lerp_val, a.unit);
+	result.source = "@keyframes";
+	result.source_line_number = a.source_line_number;
+	return result;
+}
+
+// Colourb specialization, converting from byte to float so can can interpolate
+Property Property::InterpolateColour( const Property &a, const Property &b, const float w )
+{
+	Colourf val_a;
+	Colourf val_b;
+	TypeConverter<Colourb, Colourf >::Convert( a.value.Get<Colourb >(), val_a );
+	TypeConverter<Colourb, Colourf >::Convert( b.value.Get<Colourb >(), val_b );
+
+	Colourf val_col;
+	val_col.red = Math::Lerp(val_a.red, val_b.red, w);
+	val_col.green = Math::Lerp(val_a.green, val_b.green, w);
+	val_col.blue = Math::Lerp(val_a.blue, val_b.blue, w);
+	val_col.alpha = Math::Lerp(val_a.alpha, val_b.alpha, w);
+	
+	Colourb lerp_val;
+	TypeConverter<Colourf, Colourb >::Convert( val_col, lerp_val );
+
+	Property result(lerp_val, Property::COLOUR);
+	result.source = "@keyframes";
+	result.source_line_number = a.source_line_number;
+	return result;
+}
+
 }
 }
