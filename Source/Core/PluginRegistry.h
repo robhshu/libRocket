@@ -66,6 +66,8 @@ public:
 	static void NotifyElementCreate(Element* element);
 	/// Calls OnElementDestroy() on all plugins.
 	static void NotifyElementDestroy(Element* element);
+	/// Calls OnElementAnimate() on all plugins.
+	static void NotifyElementAnimate(Element* element);
 
 private:
 	PluginRegistry();

@@ -120,6 +120,12 @@ void PluginRegistry::NotifyElementDestroy(Element* element)
 	for (size_t i = 0; i < element_plugins.size(); ++i)
 		element_plugins[i]->OnElementDestroy(element);
 }
+// Calls OnElementAnimate() on all plugins.
+void PluginRegistry::NotifyElementAnimate(Element* element)
+{
+	for (size_t i = 0; i < element_plugins.size(); ++i)
+		element_plugins[i]->OnElementAnimate(element);
+}
 
 }
 }

@@ -91,6 +91,9 @@ public:
 	/// Called whenever an element is destroyed.
 	/// @param[in] element The destroyed element.
 	virtual void OnElementDestroy(Core::Element* element);
+	/// Called when an element is animated.
+	/// @param[in] element The animated element.
+	virtual void OnElementAnimate(Core::Element* element);
 
 	/// Event handler for events from the debugger elements.
 	/// @param[in] event The event to process.

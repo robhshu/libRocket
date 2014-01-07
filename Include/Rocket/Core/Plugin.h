@@ -84,6 +84,8 @@ public:
 	virtual void OnElementCreate(Element* element);
 	/// Called when an element is destroyed.
 	virtual void OnElementDestroy(Element* element);
+	/// Called when an element is animated.
+	virtual void OnElementAnimate(Element* element);
 };
 
 }

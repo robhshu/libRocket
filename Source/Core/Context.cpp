@@ -152,8 +152,12 @@ bool Context::UpdateWithAnimation(float delta_time)
 	ElementList::iterator i = anim_handles.begin();
 	while( i != anim_handles.end() )
 	{
-		// Returns false when finished
-		if( !(*i)->UpdateAnimation(delta_time) )
+		const bool anim_active = (*i)->UpdateAnimation(delta_time);
+
+		// Notify plugins
+		PluginRegistry::NotifyElementAnimate(**i);
+
+		if( !anim_active )
 		{
 			i = anim_handles.erase(i);
 		}

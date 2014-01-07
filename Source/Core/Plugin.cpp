@@ -84,5 +84,10 @@ void Plugin::OnElementDestroy(Element* ROCKET_UNUSED(element))
 {
 }
 
+// Called when an element is animated.
+void Plugin::OnElementAnimate(Element* ROCKET_UNUSED(element))
+{
+}
+
 }
 }
