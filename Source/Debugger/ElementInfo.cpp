@@ -80,6 +80,14 @@ void ElementInfo::OnElementDestroy(Core::Element* element)
 		source_element = NULL;
 }
 
+/// Called when an element is animated.
+void ElementInfo::OnElementAnimate(Core::Element* element)
+{
+	// Update if element is selected
+	if( source_element == element )
+		UpdateSourceElement();
+}
+
 void ElementInfo::RenderHoverElement()
 {
 	if (hover_element)

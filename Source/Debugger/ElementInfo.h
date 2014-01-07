@@ -57,9 +57,12 @@ public:
 	/// Called when an element is destroyed.
 	void OnElementDestroy(Core::Element* element);
 
+	/// Called when an element is animated.
+	void OnElementAnimate(Core::Element* element);
+
 	void RenderHoverElement();
 	void RenderSourceElement();
-
+	
 protected:
 	virtual void ProcessEvent(Core::Event& event);
 
