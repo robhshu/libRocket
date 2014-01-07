@@ -27,7 +27,7 @@ This branch of libRocket aims to experiment with CSS3 animation!
 - Animate to/from last/default property value
 - The `transition` property
 - Easing functions
-- Create animation sample
+- ~~Create animation sample~~
 
 ## Features
 
