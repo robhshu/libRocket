@@ -19,15 +19,14 @@ This branch of libRocket aims to experiment with CSS3 animation!
 - Caches tags which reference an animation sequence using `animation-name` (or the shorthand, `animation`)
 - Animates by properties interpolation
 - Can specify loop count using `animation-iteration-count` property
+- Plugin notification on animation frame
 
 ### Remaining
 
-- Notify debugger which elements are updated by animation
 - Interpolate between all supported units (colours and most numerical units are supported now)
 - Animate to/from last/default property value
 - The `transition` property
 - Easing functions
-- ~~Create animation sample~~
 
 ## Features
 
