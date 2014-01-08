@@ -256,7 +256,8 @@ void Plugin::OnElementDestroy(Core::Element* element)
 // Called whenever an element is animated.
 void Plugin::OnElementAnimate(Core::Element* element)
 {
-	info_element->OnElementAnimate(element);
+	if( info_element != NULL )
+		info_element->OnElementAnimate(element);
 }
 
 // Event handler for events from the debugger elements.

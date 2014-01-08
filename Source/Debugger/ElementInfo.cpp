@@ -41,6 +41,7 @@ ElementInfo::ElementInfo(const Core::String& tag) : Core::ElementDocument(tag)
 {
 	hover_element = NULL;
 	source_element = NULL;
+	source_element_anim_time = 0.0f;
 }
 
 ElementInfo::~ElementInfo()
@@ -77,7 +78,10 @@ void ElementInfo::OnElementDestroy(Core::Element* element)
 		hover_element = NULL;
 
 	if (source_element == element)
+	{
 		source_element = NULL;
+		source_element_anim_time = 0.0f;
+	}
 }
 
 /// Called when an element is animated.
@@ -85,7 +89,17 @@ void ElementInfo::OnElementAnimate(Core::Element* element)
 {
 	// Update if element is selected
 	if( source_element == element )
-		UpdateSourceElement();
+	{
+		// Update every half second
+		const float desired_update_time = 1.0f / 2.0f;
+		const float cur_anim_time = element->GetInternalElapsedAnimationTime();
+
+		if( cur_anim_time - source_element_anim_time > desired_update_time )
+		{
+			UpdateSourceElement();
+			source_element_anim_time = cur_anim_time;
+		}
+	}
 }
 
 void ElementInfo::RenderHoverElement()
@@ -223,6 +237,16 @@ void ElementInfo::ProcessEvent(Core::Event& event)
 void ElementInfo::SetSourceElement(Core::Element* new_source_element)
 {
 	source_element = new_source_element;
+	
+	if( new_source_element != NULL )
+	{
+		source_element_anim_time = new_source_element->GetInternalElapsedAnimationTime();
+	}
+	else
+	{
+		source_element_anim_time = 0.0f;
+	}
+
 	UpdateSourceElement();
 }
 

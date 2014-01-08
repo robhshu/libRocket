@@ -80,6 +80,8 @@ private:
 
 	Core::Element* hover_element;
 	Core::Element* source_element;
+
+	float source_element_anim_time;
 };
 
 }

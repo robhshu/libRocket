@@ -581,6 +581,9 @@ public:
 	/// Update the element animation
 	bool UpdateAnimation(float delta_time);
 
+	/// Get the internal animation timer.
+	float GetInternalElapsedAnimationTime( ) const{ return anim_elapsed; }
+
 protected:
 	/// Forces the element to generate a local stacking context, regardless of the value of its z-index
 	/// property.
