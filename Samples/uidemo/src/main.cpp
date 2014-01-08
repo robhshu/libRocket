@@ -16,23 +16,25 @@
 
 Rocket::Core::Context* context = NULL;
 
-#define ANIM_DEBUG 1
-
 float update_time = 0.0f;
+const float capped_framerate = 1.0f / 60.0f;
 
 void GameLoop()
 {
-#if defined(ANIM_DEBUG)
 	const float tick_time = Rocket::Core::GetSystemInterface()->GetElapsedTime();
-	context->UpdateWithAnimation(tick_time - update_time);
-	update_time = tick_time;
-#else
-	context->Update();
-#endif
+	
+	// Cap the time between frames to our desired framerate (60FPS)
+	const float dt = Rocket::Core::Math::ClampUpper(tick_time-update_time, capped_framerate);
+	
+	// Animate with our delta time
+	context->UpdateWithAnimation(dt);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	context->Render();
 	Shell::FlipBuffers();
+
+	// Set the last update time
+	update_time = tick_time;
 }
 
 ROCKET_MAIN
