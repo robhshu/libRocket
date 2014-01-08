@@ -37,8 +37,6 @@ Variant::Variant() : type(NONE)
 	ROCKET_STATIC_ASSERT(sizeof(Colourb) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_Colourb);
 	ROCKET_STATIC_ASSERT(sizeof(Colourf) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_Colourf);
 	ROCKET_STATIC_ASSERT(sizeof(String) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_String);
-
-	//ROCKET_STATIC_ASSERT(sizeof(LinearGradient) <= LOCAL_DATA_SIZE, LOCAL_DATA_TOO_SMALL_FOR_LinearGradients);
 }
 
 Variant::Variant( const Variant& copy ) : type(NONE)

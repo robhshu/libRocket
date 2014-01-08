@@ -123,7 +123,7 @@ bool StyleSheetParser::ReadAtRule(StyleSheet* sheet, const String &rules)
 	// Add keyframe properties to all animation names
 	for (size_t i = 0; i < keyframe_name_list.size(); i++)
 	{
-		Log::Message(Log::LT_INFO, "Creating animation with %u frames for %s", frames.size(), keyframe_name_list[i]);
+		Log::Message(Log::LT_INFO, "Creating animation with %u frames for %s", frames.size(), keyframe_name_list[i].CString());
 
 		sheet->AddAnimation( keyframe_name_list[i], frames );
 		//sheet->
