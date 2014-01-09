@@ -62,12 +62,12 @@ void Variant::Clear()
 		}
 		break;
 
-		//case LINEARGRADIENT:
-		//{
-		//	LinearGradient* grad = (LinearGradient*)data;
-		//	grad->Release();
-		//}
-		//break;
+		case LINEARGRADIENT:
+		{
+			Gradientb *pGrad = Get<Gradientb* >();
+			delete pGrad;
+		}
+		break;
 		
 		default:
 		break;
@@ -102,7 +102,7 @@ void Variant::Set(const Variant& copy)
 			if( this != &copy )
 			{
 				// Make new copy of gradient
-				LinearGradient *pGrad = new LinearGradient( *copy.Get<LinearGradient* >( ) );
+				Gradientb *pGrad = new Gradientb( *copy.Get<Gradientb* >( ) );
 
 				Clear();
 				Set(pGrad);
@@ -196,11 +196,10 @@ void Variant::Set(ScriptInterface* value)
 	memcpy(data, &value, sizeof(ScriptInterface*));
 }
 
-void Variant::Set(LinearGradient* value)
+void Variant::Set(Gradientb* value)
 {
 	type = LINEARGRADIENT;
-	SET_VARIANT(LinearGradient*);
-	//memcpy(data, &value, sizeof(LinearGradient*));
+	SET_VARIANT(Gradientb*);
 }
 
 Variant& Variant::operator=(const Variant& copy)

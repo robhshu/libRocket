@@ -66,6 +66,7 @@ typedef unsigned __int64 uint64_t;
 #include <Rocket/Core/Colour.h>
 #include <Rocket/Core/Vector2.h>
 #include <Rocket/Core/String.h>
+#include <Rocket/Core/LinearGradient.h>
 
 namespace Rocket {
 namespace Core {
@@ -75,7 +76,7 @@ typedef Colour< float, 1 > Colourf;
 typedef Colour< byte, 255 > Colourb;
 typedef Vector2< float > Vector2f;
 typedef Vector2< int > Vector2i;
-	
+typedef LinearGradient< Colourb > Gradientb;
 
 class Element;
 class Dictionary;
@@ -93,18 +94,13 @@ typedef std::set< String > PropertyNameList;
 typedef std::set< String > AttributeNameList;
 typedef Dictionary ElementAttributes;
 
-class LinearGradient;
-
 class PropertyDictionary;
 
 // Keyframe list
 // NOTE: PropertyDictionary is a 'CSSRuleList'
 typedef std::map<float, PropertyDictionary> KeyframeProperties;
 typedef std::map<String, KeyframeProperties > AnimationList;
-
 }
 }
-
-#include <Rocket/Core/LinearGradient.h>
 
 #endif

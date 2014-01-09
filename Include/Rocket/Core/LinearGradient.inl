@@ -25,61 +25,34 @@
  *
  */
 
-#ifndef ROCKETCORELINEARGRADIENT_H
-#define ROCKETCORELINEARGRADIENT_H
-
-#include <Rocket/Core/Header.h>
-#include <vector>
-
-namespace Rocket {
-namespace Core {
-
-/**
-	Templated class for storage of linear gradients
-
-	@author Robert H
- */
-
+// Default constructor
 template < class ColourType >
-class LinearGradient
+LinearGradient< ColourType >::LinearGradient( )
 {
-public:
-	typedef typename ColourType StopColourType;
-	typedef typename std::vector<ColourType > Stops;
-
-	/// Default constructor.
-	LinearGradient( );
-
-	/// Copy constructor.
-	LinearGradient( const LinearGradient& rhs );
-
-	/// Set current direction.
-	inline void SetDirection( float fDir ) { direction = fDir; }
-
-	/// Add colour stop to the list.
-	void AddStop( const ColourType &colour, float ROCKET_UNUSED(fStopPos) = 0.0f );
-
-	/// Get the current direction.
-	inline float GetDirection( ) const { return direction; }
-
-	/// Get the entire list of colour stops.
-	inline const Stops &GetAllStops( ) const;
-
-private:
-	float direction;
-	Stops colour_list;
-	
-};
-
-}
+	direction = 0;
 }
 
-namespace Rocket {
-namespace Core {
+// Copy constructor
+template < class ColourType >
+LinearGradient< ColourType >::LinearGradient( const LinearGradient& rhs )
+{
+	if( this == &rhs )
+		return;
 
-#include "LinearGradient.inl"
-
+	direction = rhs.direction;
+	colour_list = rhs.colour_list;
 }
+
+// Add colour to the list of local stops
+template < class ColourType >
+void LinearGradient< ColourType >::AddStop( const ColourType &colour, float ROCKET_UNUSED(fStopPos) )
+{
+	colour_list.push_back( colour );
 }
 
-#endif
+// Get the entire list of colour stops
+template < class ColourType >
+const typename LinearGradient<ColourType >::Stops &LinearGradient< ColourType >::GetAllStops( ) const
+{
+	return colour_list;
+}

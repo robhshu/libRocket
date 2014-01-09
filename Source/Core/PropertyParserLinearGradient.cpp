@@ -45,7 +45,7 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 	if (value.Empty())
 		return false;
 
-	LinearGradient *linGrad = new LinearGradient();
+	Gradientb *linGrad = new Gradientb();
 
 	if (value.Substring(0, 15) == "linear-gradient")
 	{
@@ -66,7 +66,7 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 				if( !AngleAsDegrees( stop_val, fVal ) )
 					Log::Message(Log::LT_WARNING, "Unsupported linear gradient orientation");
 
-				linGrad->angle_deg = fVal;
+				linGrad->SetDirection( fVal );
 				vIdx++;
 			}
 
@@ -81,19 +81,19 @@ bool PropertyParserLinearGradient::ParseValue(Property& property, const String& 
 				{
 					Log::Message(Log::LT_INFO, "Source colour %s", fixed_colour.CString());
 
-					const Colourb colRes = stop_val.Get< Colourb >( );
+					const Gradientb::StopColourType colRes = stop_val.Get<Gradientb::StopColourType >( );
 
 					float fAngle = 0;
 
 					if( stop_perc.unit == Property::PERCENT )
 						fAngle = stop_perc.Get<float >();
 
-					linGrad->AddColour( colRes, fAngle );
+					linGrad->AddStop( colRes, fAngle );
 				}
 				else break;
 			}
 
-			if( linGrad->colour_list.size() < 2 )
+			if( linGrad->GetAllStops().size() < 2 )
 				Log::Message(Log::LT_WARNING, "Too few colour stops for linear-gradient");
 		}
 	}

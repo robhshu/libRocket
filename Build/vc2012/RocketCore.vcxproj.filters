@@ -1003,5 +1003,8 @@
     <None Include="..\..\Include\Rocket\Core\Vector2.inl">
       <Filter>Core\Types</Filter>
     </None>
+    <None Include="..\..\Include\Rocket\Core\LinearGradient.inl">
+      <Filter>Core\Types</Filter>
+    </None>
   </ItemGroup>
 </Project>

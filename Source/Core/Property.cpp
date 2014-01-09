@@ -52,11 +52,51 @@ String Property::ToString() const
 	return string;
 }
 
+template< typename T >
+const T InterpolateType( const T& a, const T&b, const float w )
+{
+	if( a == b )
+	{
+		return a;
+	}
+	else
+	{
+		return Math::Lerp<T>(a, b, w);
+	}
+}
+
+template< >
+const Colourf InterpolateType<Colourf >( const Colourf &a, const Colourf &b, const float w )
+{
+	Colourf result;
+	result.red = InterpolateType(a.red, b.red, w);
+	result.green = InterpolateType(a.green, b.green, w);
+	result.blue = InterpolateType(a.blue, b.blue, w);
+	result.alpha = InterpolateType(a.alpha, b.alpha, w);
+	return result;
+}
+
+template< >
+const Colourb InterpolateType<Colourb >( const Colourb &a, const Colourb &b, const float w )
+{
+	Colourf val_a;
+	Colourf val_b;
+	TypeConverter<Colourb, Colourf >::Convert( a, val_a );
+	TypeConverter<Colourb, Colourf >::Convert( b, val_b );
+
+	Colourf val_col = InterpolateType(val_a, val_b, w);
+	
+	Colourb result;
+	TypeConverter<Colourf, Colourb >::Convert( val_col, result );
+	return result;
+}
+
 Property Property::InterpolateNumber( const Property &a, const Property &b, const float w )
 {
 	const float val_a = a.value.Get<float >( );
 	const float val_b = b.value.Get<float >( );
-	const float lerp_val = Math::Lerp(val_a, val_b, w);
+
+	const float lerp_val = InterpolateType( val_a, val_b, w );
 
 	Property result(lerp_val, a.unit);
 	result.source = "@keyframes";
@@ -64,24 +104,50 @@ Property Property::InterpolateNumber( const Property &a, const Property &b, cons
 	return result;
 }
 
-// Colourb specialization, converting from byte to float so can can interpolate
 Property Property::InterpolateColour( const Property &a, const Property &b, const float w )
 {
-	Colourf val_a;
-	Colourf val_b;
-	TypeConverter<Colourb, Colourf >::Convert( a.value.Get<Colourb >(), val_a );
-	TypeConverter<Colourb, Colourf >::Convert( b.value.Get<Colourb >(), val_b );
+	const Colourb val_a = a.value.Get<Colourb >( );
+	const Colourb val_b = b.value.Get<Colourb >( );
 
-	Colourf val_col;
-	val_col.red = Math::Lerp(val_a.red, val_b.red, w);
-	val_col.green = Math::Lerp(val_a.green, val_b.green, w);
-	val_col.blue = Math::Lerp(val_a.blue, val_b.blue, w);
-	val_col.alpha = Math::Lerp(val_a.alpha, val_b.alpha, w);
-	
-	Colourb lerp_val;
-	TypeConverter<Colourf, Colourb >::Convert( val_col, lerp_val );
+	const Colourb lerp_val = InterpolateType( val_a, val_b, w );
 
 	Property result(lerp_val, Property::COLOUR);
+	result.source = "@keyframes";
+	result.source_line_number = a.source_line_number;
+	return result;
+}
+
+Property Property::InterpolateLinearGradient( const Property &a, const Property &b, const float w )
+{
+	const Gradientb* val_a = a.value.Get<Gradientb* >();
+	const Gradientb* val_b = b.value.Get<Gradientb* >();
+
+	// Dirty debug check to see if these are valid pointers
+	ROCKET_ASSERT( val_a != NULL && val_b != NULL );
+	
+	const Gradientb::Stops &val_list_a = val_a->GetAllStops();
+	const Gradientb::Stops &val_list_b = val_b->GetAllStops();
+
+	// Dirty debug check to see if these are both equal in size
+	ROCKET_ASSERT( val_list_a.size() == val_list_b.size() );
+
+	size_t i = 0;
+	Gradientb* pLg = new Gradientb();
+
+	while( i < val_list_b.size() )
+	{
+		const Gradientb::StopColourType lerp_val_i = InterpolateType<Gradientb::StopColourType >( val_list_a[i], val_list_b[i], w );
+		pLg->AddStop( lerp_val_i );
+		i++;
+	}
+
+	const float val_angle_a = val_a->GetDirection();
+	const float val_angle_b = val_b->GetDirection();
+
+	const float lerp_angle = InterpolateType( val_angle_a, val_angle_b, w );
+	pLg->SetDirection( lerp_angle );
+
+	Property result(pLg, Property::LINEAR_GRADIENT);
 	result.source = "@keyframes";
 	result.source_line_number = a.source_line_number;
 	return result;

@@ -69,7 +69,7 @@ void ElementBackground::GenerateBackground()
 	
 	if( bgProp->unit == Property::LINEAR_GRADIENT )
 	{
-		const LinearGradient * bgGrad = bgProp->value.Get< LinearGradient* >( );
+		const Gradientb * bgGrad = bgProp->value.Get<Gradientb* >( );
 		
 		int num_boxes = 0;
 
@@ -84,7 +84,7 @@ void ElementBackground::GenerateBackground()
 		std::vector< Vertex >& vertices = geometry.GetVertices();
 		std::vector< int >& indices = geometry.GetIndices();
 
-		const unsigned int stopCount = bgGrad->colour_list.size();
+		const unsigned int stopCount = bgGrad->GetAllStops().size();
 
 		if( stopCount > 1 )
 		{
@@ -92,7 +92,7 @@ void ElementBackground::GenerateBackground()
 			vertices.resize(4 * num_boxes * (stopCount-1) );
 			indices.resize(6 * num_boxes * (stopCount-1) );
 
-			LinearGradientColours gradColours;
+			Gradientb::Stops gradColours;
 			GenerateColourList(gradColours, bgGrad);
 
 			const int gradUnit = ConvertGradientUnit(bgGrad);
@@ -170,7 +170,7 @@ void ElementBackground::GenerateBackground(Vertex*& vertices, int*& indices, int
 }
 
 // Generates the background geometry for a single box with a gradient.
-void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const LinearGradientColours& lgrad_colours, bool bHoriontal)
+void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const Gradientb::Stops& lgrad_colours, bool bHoriontal)
 {
 	Vector2f padded_size = box.GetSize(Box::PADDING);
 	if (padded_size.x <= 0 ||
@@ -179,7 +179,7 @@ void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices,
 
 	if( lgrad_colours.size() >= 2 )
 	{
-		std::vector< Colourb > colours;
+		std::vector< Gradientb::StopColourType > colours;
 		colours.resize(4);
 	
 		Vector2f offset = box.GetOffset();
@@ -198,7 +198,7 @@ void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices,
 			padded_size.y = fStep_y;
 		}
 
-		for( LinearGradientColours::size_type i=0; i<lgrad_colours.size()-1; i++ )
+		for( Gradientb::Stops::size_type i=0; i<lgrad_colours.size()-1; i++ )
 		{
 			if( bHoriontal )
 			{
@@ -223,19 +223,21 @@ void ElementBackground::GenerateBackgroundGrad(Vertex*& vertices, int*& indices,
 }
 
 // Placeholder function
-int ElementBackground::ConvertGradientUnit( const LinearGradient *lgrad_desc )
+int ElementBackground::ConvertGradientUnit( const Gradientb* lgrad_desc )
 {
-	if( lgrad_desc->angle_deg == 90 ) return 1;
-	if( lgrad_desc->angle_deg == 180 ) return 2;
-	if( lgrad_desc->angle_deg == 270 ) return 3;
+	const float angle = lgrad_desc->GetDirection();
+
+	if( angle == 90 ) return 1;
+	if( angle == 180 ) return 2;
+	if( angle == 270 ) return 3;
 
 	return 0;
 }
 
-void ElementBackground::GenerateColourList( LinearGradientColours &refColours, const LinearGradient *lgrad_desc )
+void ElementBackground::GenerateColourList( Gradientb::Stops &refColours, const Gradientb *lgrad_desc )
 {
 	// Make copy
-	refColours = lgrad_desc->colour_list;
+	refColours = lgrad_desc->GetAllStops();
 
 	const int gradUnit = ConvertGradientUnit( lgrad_desc );
 

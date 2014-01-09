@@ -79,7 +79,7 @@ bool Variant::GetInto(T& value) const
 		break;
 		
 		case LINEARGRADIENT:
-			return TypeConverter< LinearGradient*, T >::Convert(*(LinearGradient**)data, value);
+			return TypeConverter< Gradientb*, T >::Convert(*(Gradientb**)data, value);
 		break;
 		
 		case VOIDPTR:

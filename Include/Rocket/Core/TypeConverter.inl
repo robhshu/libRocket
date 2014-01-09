@@ -107,15 +107,14 @@ PASS_THROUGH(Vector2f);
 PASS_THROUGH(Colourf);
 PASS_THROUGH(Colourb);
 PASS_THROUGH(String);
-PASS_THROUGH(LinearGradient);
+PASS_THROUGH(Gradientb);
 
 // Pointer types need to be typedef'd
 class ScriptInterface;
 typedef ScriptInterface* ScriptInterfacePtr;
 PASS_THROUGH(ScriptInterfacePtr);
-class LinearGradient;
-typedef LinearGradient* LinearGradientPtr;
-PASS_THROUGH(LinearGradientPtr);
+typedef Gradientb* GradientbPtr;
+PASS_THROUGH(GradientbPtr);
 typedef void* voidPtr;
 PASS_THROUGH(voidPtr);
 
@@ -411,17 +410,20 @@ VECTOR_STRING_CONVERTER(Colourf, float, 4);
 VECTOR_STRING_CONVERTER(Colourb, byte, 4);
 
 template<>
-class TypeConverter< LinearGradient*, String >
+class TypeConverter< Gradientb*, String >
 {
 public:
-	static bool Convert(const LinearGradient* src, String& dest)
+	static bool Convert(const Gradientb* src, String& dest)
 	{
-		dest.FormatString(32, "linear-gradient(%.0fdeg", src->angle_deg);
-		
-		String tmp;
-		for( LinearGradientColours::size_type i=0; i<src->colour_list.size(); i++ )
-			if( TypeConverter<Colourb, String>::Convert(src->colour_list[i], tmp) )
-				dest.Append( ", rgba(" + tmp + ")");
+		dest.FormatString(32, "linear-gradient(%.0fdeg", src->GetDirection());
+
+		// Temporary
+		//String tmp;
+		//const Gradientb::Stops &stops = src->GetAllStops();
+
+		//for( Gradientb::Stops::size_type i=0; i<stops.size(); i++ )
+		//	if( TypeConverter::Convert<Gradientb::StopColourType, String >( stops[i], tmp) )
+		//		dest.Append( ", rgba(" + tmp + ")");
 		
 		dest.Append(")");
 		return true;

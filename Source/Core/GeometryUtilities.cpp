@@ -74,7 +74,7 @@ void GeometryUtilities::GenerateQuad(Vertex* vertices, int* indices, const Vecto
 }
 
 // Generates a quad from a position, size, and colour array
-void GeometryUtilities::GenerateQuadGrad(Vertex* vertices, int* indices, const Vector2f& origin, const Vector2f& dimensions, const Colourb* colours, int index_offset)
+void GeometryUtilities::GenerateQuadGrad(Vertex* vertices, int* indices, const Vector2f& origin, const Vector2f& dimensions, const Gradientb::StopColourType* colours, int index_offset)
 {
 	vertices[0].position = origin;
 	vertices[0].colour = colours[0];

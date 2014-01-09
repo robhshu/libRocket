@@ -58,11 +58,11 @@ private:
 	// Generates the border geometry for a single box.
 	void GenerateBackground(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const Colourb& colour);
 	// Generates the border geometry for a single box with gradient.
-	void GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const LinearGradientColours& lgrad_colours, bool bHoriontal);
+	void GenerateBackgroundGrad(Vertex*& vertices, int*& indices, int& index_offset, const Box& box, const Gradientb::Stops& lgrad_colours, bool bHoriontal);
 
-	void GenerateColourList( LinearGradientColours &refColours, const LinearGradient *lgrad_desc );
+	void GenerateColourList( Gradientb::Stops &refColours, const Gradientb *lgrad_desc );
 
-	int ConvertGradientUnit( const LinearGradient *lgrad_desc );
+	int ConvertGradientUnit( const Gradientb *lgrad_desc );
 
 	Element* element;
 

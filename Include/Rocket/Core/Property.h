@@ -115,6 +115,7 @@ public:
 
 	static Property InterpolateNumber( const Property &a, const Property &b, const float w );
 	static Property InterpolateColour( const Property &a, const Property &c, const float w );
+	static Property InterpolateLinearGradient( const Property &a, const Property &c, const float w );
 };
 
 }

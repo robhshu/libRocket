@@ -371,6 +371,7 @@
     <None Include="..\..\Include\Rocket\Core\ElementInstancerGeneric.inl" />
     <None Include="..\..\Include\Rocket\Core\Colour.inl" />
     <None Include="..\..\Include\Rocket\Core\Dictionary.inl" />
+    <None Include="..\..\Include\Rocket\Core\LinearGradient.inl" />
     <None Include="..\..\Include\Rocket\Core\StringBase.inl" />
     <None Include="..\..\Include\Rocket\Core\Variant.inl" />
     <None Include="..\..\Include\Rocket\Core\Vector2.inl" />
