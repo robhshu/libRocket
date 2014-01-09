@@ -417,15 +417,19 @@ public:
 	{
 		dest.FormatString(32, "linear-gradient(%.0fdeg", src->GetDirection());
 
-		// Temporary
-		//String tmp;
-		//const Gradientb::Stops &stops = src->GetAllStops();
+		String tmp;
+		const Gradientb::Stops &stops = src->GetAllStops();
 
-		//for( Gradientb::Stops::size_type i=0; i<stops.size(); i++ )
-		//	if( TypeConverter::Convert<Gradientb::StopColourType, String >( stops[i], tmp) )
-		//		dest.Append( ", rgba(" + tmp + ")");
+		for( Gradientb::Stops::size_type i=0; i<stops.size(); i++ )
+		{
+			if( TypeConverter<Gradientb::StopColourType, String >::Convert( stops[i], tmp) )
+			{
+				dest.Append( ", rgba(" + tmp + ")");
+			}
+		}
 		
 		dest.Append(")");
+
 		return true;
 	}
 };
