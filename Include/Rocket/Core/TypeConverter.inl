@@ -365,8 +365,8 @@ public:
 		const float max_byte_as_float = 255.0f;
 
 		dest.red = static_cast<byte >( Math::ClampUpper<float >(src.red, max_byte_as_float) );
-		dest.green = static_cast<byte >( Math::ClampUpper<float >(src.blue, max_byte_as_float) );
-		dest.blue = static_cast<byte >( Math::ClampUpper<float >(src.green, max_byte_as_float) );
+		dest.green = static_cast<byte >( Math::ClampUpper<float >(src.green, max_byte_as_float) );
+		dest.blue = static_cast<byte >( Math::ClampUpper<float >(src.blue, max_byte_as_float) );
 		dest.alpha = static_cast<byte >( Math::ClampUpper<float >(src.alpha, max_byte_as_float) );
 		return true;
 	}

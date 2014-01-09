@@ -262,6 +262,12 @@ bool Element::LerpAnimationProperties( const PropertyDictionary &a, const Proper
 
 			SetProperty(it_a->first, merged_prop);
 		}
+		else if( u == Property::LINEAR_GRADIENT )
+		{
+			const Property merged_prop = Property::InterpolateLinearGradient(it_a->second, it_b->second, weight);
+
+			SetProperty(it_a->first, merged_prop);
+		}
 	}
 
 	return true;
