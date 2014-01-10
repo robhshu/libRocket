@@ -348,10 +348,12 @@ class TypeConverter< Colourb, Colourf >
 public:
 	static bool Convert(const Colourb& src, Colourf& dest)
 	{
-		dest.red = static_cast<float >( src.red );
-		dest.green = static_cast<float >( src.green );
-		dest.blue = static_cast<float >( src.blue );
-		dest.alpha = static_cast<float >( src.alpha );
+		const float max_byte_as_float = 255.0f;
+
+		dest.red = static_cast<float >( src.red ) / max_byte_as_float;
+		dest.green = static_cast<float >( src.green ) / max_byte_as_float;
+		dest.blue = static_cast<float >( src.blue ) / max_byte_as_float;
+		dest.alpha = static_cast<float >( src.alpha ) / max_byte_as_float;
 		return true;
 	}
 };
@@ -364,10 +366,10 @@ public:
 	{
 		const float max_byte_as_float = 255.0f;
 
-		dest.red = static_cast<byte >( Math::ClampUpper<float >(src.red, max_byte_as_float) );
-		dest.green = static_cast<byte >( Math::ClampUpper<float >(src.green, max_byte_as_float) );
-		dest.blue = static_cast<byte >( Math::ClampUpper<float >(src.blue, max_byte_as_float) );
-		dest.alpha = static_cast<byte >( Math::ClampUpper<float >(src.alpha, max_byte_as_float) );
+		dest.red = static_cast<byte >( src.red * max_byte_as_float );
+		dest.green = static_cast<byte >( src.green * max_byte_as_float );
+		dest.blue = static_cast<byte >( src.blue * max_byte_as_float );
+		dest.alpha = static_cast<byte >( src.alpha * max_byte_as_float );
 		return true;
 	}
 };
