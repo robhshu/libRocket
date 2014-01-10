@@ -216,7 +216,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\Rocket\Core\LinearGradient.h" />
     <ClInclude Include="..\..\Source\Core\precompiled.h" />
-    <ClInclude Include="..\..\Include\Rocket\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\Texture.h" />
     <ClInclude Include="..\..\Source\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Source\Core\TextureDatabase.h" />

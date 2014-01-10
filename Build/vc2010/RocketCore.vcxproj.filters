@@ -977,7 +977,6 @@
     <ClInclude Include="..\..\Include\Rocket\Core\LinearGradient.h">
       <Filter>Core\Types</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Rocket\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Source\Core\PropertyParserLinearGradient.h">
       <Filter>Style Sheet\Property\Definition\Parser</Filter>
     </ClInclude>
