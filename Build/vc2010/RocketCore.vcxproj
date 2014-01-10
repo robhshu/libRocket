@@ -218,6 +218,7 @@
     <ClInclude Include="..\..\Source\Core\precompiled.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\Texture.h" />
+    <ClInclude Include="..\..\Source\Core\PropertyParserLinearGradient.h" />
     <ClInclude Include="..\..\Source\Core\TextureDatabase.h" />
     <ClInclude Include="..\..\Source\Core\TextureResource.h" />
     <ClInclude Include="..\..\Include\Rocket\Core\Box.h" />
@@ -369,6 +370,7 @@
     <None Include="..\..\Include\Rocket\Core\ElementInstancerGeneric.inl" />
     <None Include="..\..\Include\Rocket\Core\Colour.inl" />
     <None Include="..\..\Include\Rocket\Core\Dictionary.inl" />
+    <None Include="..\..\Include\Rocket\Core\LinearGradient.inl" />
     <None Include="..\..\Include\Rocket\Core\StringBase.inl" />
     <None Include="..\..\Include\Rocket\Core\Variant.inl" />
     <None Include="..\..\Include\Rocket\Core\Vector2.inl" />
