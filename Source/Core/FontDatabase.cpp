@@ -29,8 +29,11 @@
 #include <Rocket/Core/FontDatabase.h>
 #include "FontFamily.h"
 #include <Rocket/Core.h>
+
+#if defined(USE_FREETYPE)
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#endif
 
 namespace Rocket {
 namespace Core {
@@ -40,7 +43,9 @@ FontDatabase* FontDatabase::instance = NULL;
 typedef std::map< String, FontEffect* > FontEffectCache;
 FontEffectCache font_effect_cache;
 
+#if defined(USE_FREETYPE)
 static FT_Library ft_library = NULL;
+#endif
 
 FontDatabase::FontDatabase()
 {
@@ -60,6 +65,7 @@ bool FontDatabase::Initialise()
 	{
 		new FontDatabase();
 
+#if defined(USE_FREETYPE)
 		FT_Error result = FT_Init_FreeType(&ft_library);
 		if (result != 0)
 		{
@@ -67,6 +73,7 @@ bool FontDatabase::Initialise()
 			Shutdown();
 			return false;
 		}
+#endif
 	}
 
 	return true;
@@ -79,11 +86,13 @@ void FontDatabase::Shutdown()
 		for (FontFamilyMap::iterator i = instance->font_families.begin(); i != instance->font_families.end(); ++i)
 			delete (*i).second;
 
+#if defined(USE_FREETYPE)
 		if (ft_library != NULL)
 		{
 			FT_Done_FreeType(ft_library);
 			ft_library = NULL;
 		}
+#endif
 
 		delete instance;
 	}
@@ -92,6 +101,7 @@ void FontDatabase::Shutdown()
 // Loads a new font face.
 bool FontDatabase::LoadFontFace(const String& file_name)
 {
+#if defined(USE_FREETYPE)
 	FT_Face ft_face = (FT_Face) instance->LoadFace(file_name);
 	if (ft_face == NULL)
 	{
@@ -112,11 +122,16 @@ bool FontDatabase::LoadFontFace(const String& file_name)
 		Log::Message(Log::LT_ERROR, "Failed to load font face %s %s (from %s).", ft_face->family_name, ft_face->style_name, file_name.CString());
 		return false;
 	}
+#else
+	Log::Message(Log::LT_ERROR, "Failed to load font face from %s.", file_name.CString());
+	return false;
+#endif
 }
 
 // Adds a new font face to the database, ignoring any family, style and weight information stored in the face itself.
 bool FontDatabase::LoadFontFace(const String& file_name, const String& family, Font::Style style, Font::Weight weight)
 {
+#if defined(USE_FREETYPE)
 	FT_Face ft_face = (FT_Face) instance->LoadFace(file_name);
 	if (ft_face == NULL)
 	{
@@ -134,11 +149,16 @@ bool FontDatabase::LoadFontFace(const String& file_name, const String& family, F
 		Log::Message(Log::LT_ERROR, "Failed to load font face %s %s (from %s).", ft_face->family_name, ft_face->style_name, file_name.CString());
 		return false;
 	}
+#else
+	Log::Message(Log::LT_ERROR, "Failed to load font face from %s.", file_name.CString());
+	return false;
+#endif
 }
 
 // Adds a new font face to the database, loading from memory.
 bool FontDatabase::LoadFontFace(const byte* data, int data_length)
 {
+#if defined(USE_FREETYPE)
 	FT_Face ft_face = (FT_Face) instance->LoadFace(data, data_length, "memory", false);
 	if (ft_face == NULL)
 	{
@@ -159,11 +179,16 @@ bool FontDatabase::LoadFontFace(const byte* data, int data_length)
 		Log::Message(Log::LT_ERROR, "Failed to load font face %s %s (from byte stream).", ft_face->family_name, ft_face->style_name);
 		return false;
 	}
+#else
+	Log::Message(Log::LT_ERROR, "Failed to load font face from byte stream.");
+	return false;
+#endif
 }
 
 // Adds a new font face to the database, loading from memory, ignoring any family, style and weight information stored in the face itself.
 bool FontDatabase::LoadFontFace(const byte* data, int data_length, const String& family, Font::Style style, Font::Weight weight)
 {
+#if defined(USE_FREETYPE)
 	FT_Face ft_face = (FT_Face) instance->LoadFace(data, data_length, "memory", false);
 	if (ft_face == NULL)
 	{
@@ -181,6 +206,10 @@ bool FontDatabase::LoadFontFace(const byte* data, int data_length, const String&
 		Log::Message(Log::LT_ERROR, "Failed to load font face %s %s (from byte stream).", ft_face->family_name, ft_face->style_name);
 		return false;
 	}
+#else
+	Log::Message(Log::LT_ERROR, "Failed to load font face from byte stream.");
+	return false;
+#endif
 }
 
 // Returns a handle to a font face that can be used to position and render text.
@@ -274,6 +303,7 @@ bool FontDatabase::AddFace(void* face, const String& family, Font::Style style, 
 // Loads a FreeType face.
 void* FontDatabase::LoadFace(const String& file_name)
 {
+#if defined(USE_FREETYPE)
 	FileInterface* file_interface = GetFileInterface();
 	FileHandle handle = file_interface->Open(file_name);
 
@@ -289,11 +319,15 @@ void* FontDatabase::LoadFace(const String& file_name)
 	file_interface->Close(handle);
 
 	return LoadFace(buffer, length, file_name, true);
+#else
+	return NULL;
+#endif
 }
 
 // Loads a FreeType face from memory.
 void* FontDatabase::LoadFace(const byte* data, int data_length, const String& source, bool local_data)
 {
+#if defined(USE_FREETYPE)
 	FT_Face face = NULL;
 	int error = FT_New_Memory_Face(ft_library, (const FT_Byte*) data, data_length, 0, &face);
 	if (error != 0)
@@ -321,6 +355,9 @@ void* FontDatabase::LoadFace(const byte* data, int data_length, const String& so
 	}
 
 	return face;
+#else
+	return NULL;
+#endif
 }
 
 }

@@ -144,6 +144,7 @@ FontFaceHandle* FontFace::GetHandle(const String& _raw_charset, int size)
 // Releases the face's FreeType face structure.
 void FontFace::ReleaseFace()
 {
+#if defined(USE_FREETYPE)
 	if (face != NULL)
 	{
 		FT_Byte* face_memory = face->stream->base;
@@ -154,6 +155,7 @@ void FontFace::ReleaseFace()
 
 		face = NULL;
 	}
+#endif
 }
 
 }

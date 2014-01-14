@@ -36,8 +36,14 @@
 #include <Rocket/Core/Geometry.h>
 #include <Rocket/Core/String.h>
 #include <Rocket/Core/Texture.h>
+
+#if defined(USE_FREETYPE)
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#else
+typedef unsigned FT_Face;
+typedef unsigned FT_GlyphSlot;
+#endif
 
 namespace Rocket {
 namespace Core {

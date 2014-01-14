@@ -31,8 +31,14 @@
 namespace Rocket {
 namespace Core {
 
+#if !defined(USE_FREETYPE)
+	typedef unsigned *FT_Face;
+	typedef unsigned *FT_GlyphSlot;
+#endif
+
 namespace Font
 {
+
 	enum Style
 	{
 		STYLE_NORMAL = 0,

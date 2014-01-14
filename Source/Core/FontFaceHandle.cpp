@@ -70,6 +70,7 @@ FontFaceHandle::~FontFaceHandle()
 // Initialises the handle so it is able to render text.
 bool FontFaceHandle::Initialise(FT_Face ft_face, const String& _charset, int _size)
 {
+#if defined(USE_FREETYPE)
 	size = _size;
 
 	raw_charset = _charset;
@@ -109,6 +110,9 @@ bool FontFaceHandle::Initialise(FT_Face ft_face, const String& _charset, int _si
 
 
 	return true;
+#else
+	return false;
+#endif
 }
 
 // Returns the point size of this font face.
@@ -353,6 +357,7 @@ void FontFaceHandle::OnReferenceDeactivate()
 
 void FontFaceHandle::GenerateMetrics(FT_Face ft_face)
 {
+#if defined(USE_FREETTPE)
 	line_height = ft_face->size->metrics.height >> 6;
 	baseline = line_height - (ft_face->size->metrics.ascender >> 6);
 
@@ -382,10 +387,12 @@ void FontFaceHandle::GenerateMetrics(FT_Face ft_face)
 		x_height = ft_face->glyph->metrics.height >> 6;
 	else
 		x_height = 0;
+#endif
 }
 
 void FontFaceHandle::BuildGlyphMap(FT_Face ft_face, const UnicodeRange& unicode_range)
 {
+#if defined(USE_FREETTPE)
 	for (word character_code = (word) (Math::Max< unsigned int >(unicode_range.min_codepoint, 32)); character_code <= unicode_range.max_codepoint; ++character_code)
 	{
 		int index = FT_Get_Char_Index(ft_face, character_code);
@@ -411,10 +418,12 @@ void FontFaceHandle::BuildGlyphMap(FT_Face ft_face, const UnicodeRange& unicode_
 			glyphs[character_code] = glyph;
 		}
 	}
+#endif
 }
 
 void FontFaceHandle::BuildGlyph(FontGlyph& glyph, FT_GlyphSlot ft_glyph)
 {
+#if defined(USE_FREETTPE)
 	// Set the glyph's dimensions.
 	glyph.dimensions.x = ft_glyph->metrics.width >> 6;
 	glyph.dimensions.y = ft_glyph->metrics.height >> 6;
@@ -494,10 +503,12 @@ void FontFaceHandle::BuildGlyph(FontGlyph& glyph, FT_GlyphSlot ft_glyph)
 	}
 	else
 		glyph.bitmap_data = NULL;
+#endif
 }
 
 void FontFaceHandle::BuildKerning(FT_Face ft_face)
 {
+#if defined(USE_FREETTPE)
 	// Compile the kerning information for this character if the font includes it.
 	if (FT_HAS_KERNING(ft_face))
 	{
@@ -526,10 +537,12 @@ void FontFaceHandle::BuildKerning(FT_Face ft_face)
 			}
 		}
 	}
+#endif
 }
 
 int FontFaceHandle::GetKerning(word lhs, word rhs) const
 {
+#if defined(USE_FREETTPE)
 	if (rhs >= kerning.size())
 		return 0;
 
@@ -538,11 +551,15 @@ int FontFaceHandle::GetKerning(word lhs, word rhs) const
 		return 0;
 
 	return kerning_map[lhs];
+#else
+	return 0;
+#endif
 }
 
 // Generates (or shares) a layer derived from a font effect.
 FontFaceLayer* FontFaceHandle::GenerateLayer(FontEffect* font_effect)
 {
+#if defined(USE_FREETTPE)
 	// See if this effect has been instanced before, as part of a different configuration.
 	FontLayerMap::iterator i = layers.find(font_effect);
 	if (i != layers.end())
@@ -584,6 +601,9 @@ FontFaceLayer* FontFaceHandle::GenerateLayer(FontEffect* font_effect)
 	}
 
 	return layer;
+#else
+	return NULL;
+#endif
 }
 
 }

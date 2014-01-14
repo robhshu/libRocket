@@ -29,8 +29,11 @@
 #define ROCKETCOREFONTFACE_H
 
 #include <Rocket/Core/Font.h>
+
+#if defined(USE_FREETYPE)
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#endif
 
 namespace Rocket {
 namespace Core {
