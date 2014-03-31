@@ -242,7 +242,7 @@ void ElementBackground::GenerateColourList( Gradientb::Stops &refColours, const 
 	const int gradUnit = ConvertGradientUnit( lgrad_desc );
 
 	// 'to left' or 'to bottom'
-	if( gradUnit == 0 || gradUnit == 3 )
+	if( !(gradUnit == 0 || gradUnit == 3 ) )
 		std::reverse(refColours.begin(), refColours.end());
 }
 
